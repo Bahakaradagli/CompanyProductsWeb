@@ -55,5 +55,53 @@ body{ background:#0f1115; color:#e5e7eb; font-family:Inter,system-ui,-apple-syst
   .desknav__title{ display:none; } /* sadece logo kalsın */
 }
 
-/* ==== MARKALAR GRID (common.css ile birlikte çalışır) ==== */
-.brands a.brand{ text-decoration:none; color:inherit; }
+/* ==== SAYFA BAŞLIĞI ==== */
+.page-title{
+  margin:16px 0 16px;
+  font-weight:700;
+  letter-spacing:.02em;
+  color:#E9ECF8;
+  font-size: clamp(18px, 3vw, 28px);
+}
+
+/* ==== MARKALAR GRID ==== */
+.brands{
+  display: grid;
+  grid-template-columns: repeat( auto-fill, minmax(220px, 1fr) );
+  gap: 14px;
+  margin-bottom: 24px;
+}
+a.brand{ 
+  display:flex; align-items:center; gap:12px;
+  text-decoration:none; color:inherit;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  transition: transform .1s ease, background .15s ease, border-color .15s ease;
+}
+a.brand:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.09);
+  border-color: rgba(255,255,255,.12);
+}
+a.brand img{
+  width:56px; height:56px; object-fit:contain;
+  background:#0b0d12; border-radius:10px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.brand__text{ display:flex; flex-direction:column; }
+.brand__text h4{
+  margin:0; font-size:15px; font-weight:700; letter-spacing:.2px; color:#F1F4FB;
+}
+.brand__text small{
+  margin-top:2px; color:#A8AFBD; letter-spacing:.2px;
+}
+
+/* mobil için sıkıştırma */
+@media (max-width: 480px){
+  .brands{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  a.brand{ padding: 8px 10px; }
+  a.brand img{ width:48px; height:48px; border-radius:8px; }
+  .brand__text h4{ font-size:14px; }
+}

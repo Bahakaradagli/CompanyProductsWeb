@@ -10,17 +10,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- mevcut genel stillerin (kart/grid) için -->
+  <!-- ortak stiller (varsa) -->
   <link rel="stylesheet" href="common.css">
-  <!-- bu sayfanın header tasarımı için -->
+  <!-- bu sayfanın stilleri -->
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <!-- ==== DESKTOP NAV (Glide’e benzer) ==== -->
+  <!-- ==== DESKTOP NAV ==== -->
   <header class="desknav" role="banner" style="--accent:#54577D">
     <div class="desknav__wrap">
       <div class="desknav__inner">
-
         <!-- Sol: Logo + Başlık -->
         <div class="desknav__brand">
           <img class="desknav__logo"
@@ -34,26 +33,19 @@
         <nav class="desknav__tabs" aria-label="Ana gezinme">
           <a class="desknav__tab" href="index.html" aria-current="page">
             <span class="desknav__icon" aria-hidden="true">
-              <!-- briefcase -->
-              <svg viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 4h14m-15 0
-              a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5
-              a2 2 0 0 1-2-2v-7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 4h14m-15 0a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </span>
             <span>Markalar</span>
           </a>
           <a class="desknav__tab" href="products.html">
             <span class="desknav__icon" aria-hidden="true">
-              <!-- components -->
-              <svg viewBox="0 0 24 24"><path d="M4 7h7v7H4V7Zm9 0h7v7h-7V7ZM8 17h8v3H8v-3Z"
-              fill="currentColor"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M4 7h7v7H4V7Zm9 0h7v7h-7V7ZM8 17h8v3H8v-3Z" fill="currentColor"/></svg>
             </span>
             <span>Ürünler</span>
           </a>
           <a class="desknav__tab" href="contact.html">
             <span class="desknav__icon" aria-hidden="true">
-              <!-- bank -->
-              <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z"
-              fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </span>
             <span>İletişim</span>
           </a>
@@ -64,53 +56,56 @@
 
   <!-- ==== SAYFA İÇERİĞİ ==== -->
   <main class="container">
-    <h2 style="margin:16px 0 16px">Markalar</h2>
-    <div id="brands" class="brands"></div>
+    <h2 class="page-title">Markalar</h2>
+    <div id="brands" class="brands" aria-live="polite"></div>
   </main>
 
   <footer>
     <small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small>
   </footer>
 
-  <!-- Aktif sekme (emniyete almak için) -->
+  <!-- Sekme: aktif sayfayı netleştir -->
   <script>
     (function(){
       const here = (location.pathname.split('/').pop() || 'index.html');
       document.querySelectorAll('.desknav__tab').forEach(t=>{
         const isHere = (t.getAttribute('href')||'') === here || (here==='' && t.getAttribute('href')==='index.html');
-        t.setAttribute('aria-current', isHere?'page':'false');
+        t.setAttribute('aria-current', isHere ? 'page' : 'false');
       });
     })();
   </script>
 
   <!-- JSON'dan Markalar -->
   <script>
-    const $ = s => document.querySelector(s);
-    async function loadJSON(p){ const r=await fetch(p,{cache:'no-store'}); if(!r.ok) throw new Error(p); return r.json(); }
-
+    const $ = (s, r=document) => r.querySelector(s);
+    async function loadJSON(url){
+      const res = await fetch(url, { cache: 'no-store' });
+      if(!res.ok) throw new Error(url + ' yüklenemedi');
+      return res.json();
+    }
     (async function init(){
       try{
-        const [catalogs, brands] = await Promise.all([
-          loadJSON('data/catalogs.json'),
-          loadJSON('data/brands.json')
-        ]);
-        const wrap = $('#brands'); wrap.innerHTML='';
+        const brands = await loadJSON('data/brands.json');
+        const wrap = $('#brands');
+        wrap.innerHTML = '';
         brands.forEach(b=>{
-          const catId = (catalogs.find(c=>c.id===b.id)?.id)||'';
           const a = document.createElement('a');
-          a.href = catId ? ('products.html#'+catId) : 'products.html';
+          a.href = 'products.html#' + encodeURIComponent(b.id);
           a.className = 'brand';
           a.innerHTML = `
             <img src="${b.img}" alt="${b.name} logosu"
                  onerror="this.src='https://dummyimage.com/88x88/0b0d12/ffffff&text='+encodeURIComponent('${(b.name||'M')[0]}')">
-            <div>
+            <div class="brand__text">
               <h4>${b.name}</h4>
-              <small>${b.count||''} ürün</small>
+              <small>${b.count ?? ''} ürün</small>
             </div>`;
           wrap.appendChild(a);
         });
         $('#y').textContent = new Date().getFullYear();
-      }catch(e){ console.error(e); alert('Markalar yüklenemedi.'); }
+      }catch(e){
+        console.error(e);
+        alert('Markalar yüklenemedi.');
+      }
     })();
   </script>
 </body>

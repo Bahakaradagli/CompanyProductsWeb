@@ -8,28 +8,22 @@
   <!-- fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <!-- ortak stiller (varsa) -->
   <link rel="stylesheet" href="common.css">
-  <!-- bu sayfanın stilleri -->
+  <!-- bu sayfa -->
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <!-- ==== DESKTOP NAV ==== -->
+  <!-- ==== DESKTOP NAV (KORUNDU) ==== -->
   <header class="desknav" role="banner" style="--accent:#54577D">
     <div class="desknav__wrap">
       <div class="desknav__inner">
-        <!-- Sol: Logo + Başlık -->
         <div class="desknav__brand">
-          <img class="desknav__logo"
-               src="assets/logo-150.png"
-               alt="Marmara Dağıtım Logo"
-               onerror="this.style.display='none'">
+          <img class="desknav__logo" src="assets/logo-150.png" alt="Marmara Dağıtım Logo" onerror="this.style.display='none'">
           <span class="desknav__title">MARMARA DAĞITIM</span>
         </div>
-
-        <!-- Sağ: Sekmeler -->
         <nav class="desknav__tabs" aria-label="Ana gezinme">
           <a class="desknav__tab" href="index.html" aria-current="page">
             <span class="desknav__icon" aria-hidden="true">
@@ -54,18 +48,19 @@
     </div>
   </header>
 
-  <!-- ==== SAYFA İÇERİĞİ ==== -->
+  <!-- ==== ALT KISIM: GLIDE LİSTE GÖRÜNÜMÜ ==== -->
   <main class="container">
-    <h2 class="page-title">Markalar</h2>
-    <div id="brands" class="brands" aria-live="polite"></div>
+    <div class="list-outer">
+      <div class="list list--flat" id="brandList" aria-live="polite"><!-- JS dolduracak --></div>
+    </div>
   </main>
 
   <footer>
     <small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small>
   </footer>
 
-  <!-- Sekme: aktif sayfayı netleştir -->
   <script>
+    // aktif sekme emniyeti
     (function(){
       const here = (location.pathname.split('/').pop() || 'index.html');
       document.querySelectorAll('.desknav__tab').forEach(t=>{
@@ -73,38 +68,48 @@
         t.setAttribute('aria-current', isHere ? 'page' : 'false');
       });
     })();
-  </script>
 
-  <!-- JSON'dan Markalar -->
-  <script>
     const $ = (s, r=document) => r.querySelector(s);
+
     async function loadJSON(url){
-      const res = await fetch(url, { cache: 'no-store' });
-      if(!res.ok) throw new Error(url + ' yüklenemedi');
+      const res = await fetch(url, { cache:'no-store' });
+      if(!res.ok) throw new Error(url);
       return res.json();
     }
+
+    function listRow(b){
+      const row = document.createElement('a');
+      row.className = 'row';
+      row.href = 'products.html#' + encodeURIComponent(b.id);
+      row.innerHTML = `
+        <div class="row__left">
+          <div class="row__thumb">
+            <img src="${b.img}" alt="${b.name} logosu">
+          </div>
+          <div class="row__texts">
+            <div class="row__title">${(b.name||'').toUpperCase()}</div>
+          </div>
+        </div>
+        <div class="row__right" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="row__chev"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      `;
+      const img = row.querySelector('img');
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = 'https://dummyimage.com/120x120/ffffff/111111&text=' + encodeURIComponent((b.name||'M')[0]);
+      };
+      return row;
+    }
+
     (async function init(){
       try{
         const brands = await loadJSON('data/brands.json');
-        const wrap = $('#brands');
-        wrap.innerHTML = '';
-        brands.forEach(b=>{
-          const a = document.createElement('a');
-          a.href = 'products.html#' + encodeURIComponent(b.id);
-          a.className = 'brand';
-          a.innerHTML = `
-            <img src="${b.img}" alt="${b.name} logosu"
-                 onerror="this.src='https://dummyimage.com/88x88/0b0d12/ffffff&text='+encodeURIComponent('${(b.name||'M')[0]}')">
-            <div class="brand__text">
-              <h4>${b.name}</h4>
-              <small>${b.count ?? ''} ürün</small>
-            </div>`;
-          wrap.appendChild(a);
-        });
+        const wrap = $('#brandList'); wrap.innerHTML = '';
+        brands.forEach(b => wrap.appendChild(listRow(b)));
         $('#y').textContent = new Date().getFullYear();
       }catch(e){
-        console.error(e);
-        alert('Markalar yüklenemedi.');
+        console.error(e); alert('Markalar yüklenemedi.');
       }
     })();
   </script>

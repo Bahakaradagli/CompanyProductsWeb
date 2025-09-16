@@ -1,54 +1,116 @@
-:root{--bg:#0f1115;--panel:#151822;--muted:#98a2b3;--text:#e5e7eb;--brand:#6c6aa9;--radius:14px;--gap:14px;--shadow:0 10px 30px rgba(0,0,0,.35)}
-*{box-sizing:border-box} html,body{height:100%}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--text)}
-.container{max-width:1100px;margin:0 auto;padding:0 16px}
+/* ========= Tema tonları ========= */
+:root{
+  --bg:#0f1115;
+  --panel:#1a1c24;
+  --panel-2:#1f1f27;
+  --border:rgba(255,255,255,.08);
+  --muted:#a3a8b3;
+  --text:#eaeef5;
+  --accent:#54577D;          /* buton ve vurgu rengi (glide tonuna yakın) */
+  --accent-border:rgba(120,122,160,.45);
+}
 
-/* varsayılan üst bar (eski stil; yeni header index.css'te) */
-.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--brand),#5a588f);border-bottom:1px solid rgba(255,255,255,.08)}
-.nav{display:flex;align-items:center;gap:12px;height:64px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:700}
-.logo-badge{width:32px;height:32px;border-radius:10px;background:#11131a;display:grid;place-items:center;color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.08)}
-.tabs{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-.tab{appearance:none;border:0;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-weight:600;cursor:pointer;text-decoration:none}
-.tab[aria-current="page"]{background:#fff;color:#1f2937}
+/* Sayfa arka planı ve tipografi küçük dokunuş */
+body{ background:var(--bg); color:var(--text); }
+.container{ max-width:1100px; padding:0 20px; }
 
-/* sayfa iskeleti */
-main{padding:18px 0 60px}
-footer{padding:28px 0 60px;text-align:center;color:var(--muted)}
-.muted{color:var(--muted)}
+/* ========= HERO (ekran görüntüsündeki baş kısım) ========= */
+.contact-hero{
+  margin: 28px 0 10px;
+  text-align: center;
+  background: transparent;     /* arka panel yok */
+  border: 0;
+}
+.contact-hero__img{
+  /* Ekran görüntüsündeki büyük yuvarlak logo */
+  --size: 150px;
+  width: var(--size);
+  height: var(--size);
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: center/70% no-repeat #0b0d12;
+  background-image: var(--hero, none);
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.35),
+    inset 0 0 0 6px rgba(255,255,255,.06);
+  border: 1px solid var(--border);
+}
+@media (min-width:768px){
+  .contact-hero__img{ --size: 170px; margin-bottom: 16px; }
+}
+.contact-hero__content{
+  padding: 0 8px 8px;
+  background: transparent;
+  border: 0;
+}
+.contact-hero__title{
+  margin: 0 0 10px;
+  font-size: clamp(22px, 3.2vw, 32px);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.contact-hero__desc{
+  margin: 0 auto;
+  max-width: 980px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: clamp(14px, 1.6vw, 16px);
+}
 
-/* grid + kartlar (Markalar/Ürünler ortak) */
-.grid{display:grid;gap:var(--gap);grid-template-columns:repeat(1,minmax(0,1fr))}
-@media(min-width:480px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(min-width:840px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.card{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
-.card img{width:100%;aspect-ratio:1/1;object-fit:cover;background:#0b0d12}
-.card-body{padding:12px}
-.card-title{font-size:14px;font-weight:700;line-height:1.3}
-.card-sub{font-size:12px;color:var(--muted);margin-top:4px}
+/* ========= LİSTE / KİŞİ KARTLARI ========= */
+.contact-list{
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 40px;
+}
+.contact-row{
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 12px 12px 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.contact-row__left{ display: flex; align-items: center; gap: 12px; min-width: 0; }
+.contact-row__avatar{
+  width: 56px; height: 56px; border-radius: 50%;
+  object-fit: cover; background:#0b0d12;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06);
+}
+.contact-row__text{ min-width: 0; }
+.contact-row__name{
+  margin: 0; font-weight: 700; font-size: 16px; color:#fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.contact-row__area{
+  margin: 3px 0 0; font-size: 14px; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
-/* Markalar listesi */
-.brands{display:grid;gap:var(--gap);grid-template-columns:repeat(2,minmax(0,1fr))}
-@media(min-width:680px){.brands{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.brand{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:12px;display:flex;gap:10px;align-items:center;text-decoration:none;color:inherit}
-.brand img{width:44px;height:44px;object-fit:cover;border-radius:10px}
-.brand h4{margin:0;font-size:14px}
-.brand small{display:block;color:var(--muted)}
+/* Sağdaki “Ara / Call” butonu – yuvarlak köşe, glide benzeri */
+.contact-row__right{ margin-left:auto; }
+.contact-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  height: 40px; padding: 0 14px;
+  background: #191a24;
+  color:#c8c9d5; text-decoration:none; font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid var(--accent-border);
+  transition: background .15s ease, transform .05s ease, border-color .15s ease;
+}
+.contact-btn svg{ display:block }
+.contact-btn:hover{ background:#1f2030; border-color: rgba(150,152,190,.6); }
+.contact-btn:active{ transform: translateY(1px); }
 
-/* Ürünler toolbar */
-.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
-.select,.search{height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:var(--panel);color:var(--text)}
-.select{padding:0 12px}
-.search{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;padding:0 12px}
-.search input{background:transparent;border:0;outline:none;color:var(--text);width:100%}
+/* küçük ekran – buton alta gelsin */
+@media (max-width: 520px){
+  .contact-row{ flex-wrap: wrap; }
+  .contact-row__right{ width:100%; }
+  .contact-btn{ width:100%; justify-content:center; }
+}
 
-/* İletişim – temel bloklar (detaylısı contact.css'te) */
-.people{display:grid;gap:var(--gap)}
-.person{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:10px}
-.avatar{width:44px;height:44px;border-radius:50%;background:#0b0d12;object-fit:cover}
-.person h5{margin:0 0 2px;font-size:14px}
-.person small{color:var(--muted)}
-.btn{margin-left:auto;background:#1f2937;color:#fff;padding:10px 12px;border-radius:10px;text-decoration:none;border:1px solid rgba(255,255,255,.08)}
-.hero{background:radial-gradient(1200px 400px at 50% -200px,rgba(255,255,255,.08),transparent 60%);text-align:center;padding:28px 0 12px}
-.hero .logo-badge{width:64px;height:64px;border-radius:18px;margin:0 auto 10px}
-.lead{color:var(--muted)}
+/* ========= Footer tonu ========= */
+footer small{ color: var(--muted); }

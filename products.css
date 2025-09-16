@@ -1,51 +1,53 @@
-/* Sayfa zemin ve konteyner (Glide görünümüne yakın) */
+/* Tema değişkenleri */
 :root{
-  --brand:#54577D;
+  --brand:#54577D;              /* mor şerit rengi (index.css ile uyumlu) */
   --bg:#0f0f10;
-  --panel:#131416;
   --line:rgba(255,255,255,.08);
   --text:#EDEEF1;
   --muted:#A8AFBD;
+
+  /* Görseldeki gibi soldan iç boşluk.
+     Büyük ekranda ~180px, küçüldükçe 16px'e iner. */
+  --gutter: clamp(16px, 6vw, 180px);
 }
 
 html,body{height:100%}
 body{
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   margin: 0;
 }
 
-/* Üst mor şerit index.css’ten gelir (desknav) */
-
-/* Liste alanı */
-.list-container{
-  padding-top: 12px;
+/* ===== Mor alt şerit: Başlık burada ===== */
+.subbar{
+  background: var(--brand);
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  padding: 14px 0;               /* şerit yüksekliği */
 }
-.list-inner{
-  max-width: 1240px;
-  margin: 0 auto;
-}
-
-/* Başlık */
-.list-title{
-  margin: 18px 16px;
-  padding: 12px 0 8px;
-  font-size: clamp(22px, 3.4vw, 36px);
+.subbar__title{
+  margin: 0;
+  padding-left: var(--gutter);    /* soldan aynı hiza */
+  padding-right: 16px;
   font-weight: 800;
-  letter-spacing: .02em;
   text-transform: uppercase;
-  color: #E9ECF8;
+  letter-spacing: .02em;
+  color: #fff;
+  font-size: clamp(20px, 2.6vw, 34px); /* görseldeki büyüklük */
+}
+
+/* ===== Liste alanı ===== */
+.list-container{ padding-top: 4px; }
+.list-inner{
+  width: 100%;
+  margin: 0 auto;
+  padding-left: var(--gutter);   /* tüm satırlar başlıkla aynı hizada */
+  padding-right: 16px;
 }
 
 /* Liste */
-.list{
-  background: transparent;
-}
-.list-empty{
-  margin: 24px 16px;
-  color: var(--muted);
-}
+.list{ background: transparent; }
+.list-empty{ margin: 24px 0; color: var(--muted); }
 
 /* Satır */
 .list-item{
@@ -54,31 +56,20 @@ body{
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 18px 16px;
+  padding: 18px 0;               /* yatay paddingleri üst kapsayıcı veriyor */
   border-top: 1px solid var(--line);
   text-decoration: none;
   color: inherit;
   transition: background .15s ease;
 }
-.list-item:first-child{
-  border-top: 0;
-  margin-top: 8px;
-}
-.list-item:hover{
-  background: rgba(255,255,255,.03);
-}
+.list-item:first-child{ border-top: 0; margin-top: 6px; }
+.list-item:hover{ background: rgba(255,255,255,.03); }
 
 /* Sol taraf */
-.list-left{
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
+.list-left{ display:flex; align-items:center; gap:18px; }
 .list-thumb{
-  width: 108px;
-  height: 108px;
-  object-fit: cover;
-  border-radius: 14px;
+  width: 108px; height: 108px;
+  object-fit: cover; border-radius: 14px;
   background: #0b0c0f;
   box-shadow: 0 4px 18px rgba(0,0,0,.25), inset 0 0 0 1px var(--line);
 }
@@ -86,7 +77,7 @@ body{
   .list-thumb{ width: 84px; height: 84px; border-radius: 12px; }
 }
 
-/* Metinler */
+/* Metin */
 .list-text{ display:flex; flex-direction:column; }
 .list-name{
   font-size: clamp(15px, 2.2vw, 20px);
@@ -98,18 +89,10 @@ body{
 
 /* Sağdaki ok */
 .list-right{ margin-left: auto; padding-left: 8px; }
-.chev{
-  width: 22px; height: 22px;
-  color: #C4C6D6;
-  opacity: .9;
-}
+.chev{ width:22px; height:22px; color:#C4C6D6; opacity:.9; }
 
-/* Alt çizgi genişliği (full-bleed hissi) */
+/* Full-bleed alt çizgi hissi */
 .list-item::after{
-  content:'';
-  position:absolute;
-  inset:auto 0 0 0;
-  height:1px;
-  background: var(--line);
-  transform: translateY(.5px);
+  content:''; position:absolute; inset:auto 0 0 0; height:1px;
+  background: var(--line); transform: translateY(.5px);
 }

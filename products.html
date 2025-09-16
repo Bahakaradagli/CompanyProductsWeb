@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ortak -->
+  <!-- ortak stiller -->
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="index.css">
   <!-- bu sayfanın stilleri -->
@@ -51,20 +51,25 @@
 
   <!-- ==== SAYFA İÇERİĞİ ==== -->
   <main class="container">
-    <!-- Markalar sayfasıyla aynı h2 konumu ve boyutu -->
-    <h2 id="pageTitle" class="page-title">Ürünler</h2>
-
-    <div class="products">
-      <div id="productList" class="list"><!-- JS dolduracak --></div>
+    <!-- üst bar: başlık + arama -->
+    <div class="toolbar">
+      <h2 id="pageTitle" class="page-title">Ürünler</h2>
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input id="q" type="search" placeholder="Ara" autocomplete="off" />
+      </label>
     </div>
+
+    <!-- gruplar burada -->
+    <div id="groups" class="groups" aria-live="polite"></div>
   </main>
 
   <footer>
     <small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small>
   </footer>
 
-  <!-- Aktif sekme emniyet -->
   <script>
+    // aktif sekme emniyet
     (function(){
       const here = (location.pathname.split('/').pop() || 'products.html');
       document.querySelectorAll('.desknav__tab').forEach(t=>{
@@ -72,62 +77,98 @@
         t.setAttribute('aria-current', isHere?'page':'false');
       });
     })();
-  </script>
 
-  <!-- Ürünler -->
-  <script>
     const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
     async function loadJSON(url){
       const res = await fetch(url, {cache:'no-store'});
       if(!res.ok) throw new Error(url);
       return res.json();
     }
-    function fallbackImg(imgEl, text='IMG'){
-      imgEl.onerror = null;
-      imgEl.src = 'https://dummyimage.com/160x160/1a1a1a/ffffff&text=' + encodeURIComponent(text);
-    }
-    function listItem(p){
-      const row = document.createElement('a');
-      row.className = 'list-item';
-      row.href = '#';
-      row.innerHTML = `
-        <div class="list-left">
-          <img class="list-thumb" src="${p.img}" alt="${p.name}">
-          <div class="list-text">
-            <div class="list-name">${p.name}</div>
-          </div>
+
+    function makeCard(p){
+      const a = document.createElement('a');
+      a.className = 'product-card';
+      a.href = '#';
+      a.innerHTML = `
+        <div class="thumb">
+          <img src="${p.img}" alt="${p.name}">
         </div>
-        <div class="list-right" aria-hidden="true">
-          <svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>`;
-      $('.list-thumb', row).onerror = () => fallbackImg($('.list-thumb', row), (p.name||'U')[0]);
-      return row;
+        <div class="title" title="${p.name}">${p.name.toUpperCase()}</div>
+      `;
+      // fallback
+      const img = a.querySelector('img');
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = 'https://dummyimage.com/600x600/ffffff/111111&text=' + encodeURIComponent((p.name||'U')[0]);
+      };
+      return a;
+    }
+
+    function makeGroup(label, items){
+      const sec = document.createElement('section');
+      sec.className = 'group';
+      sec.innerHTML = `<h3 class="group-title">${label}</h3><div class="grid"></div>`;
+      const grid = sec.querySelector('.grid');
+      items.forEach(p => grid.appendChild(makeCard(p)));
+      return sec;
+    }
+
+    function applyFilter(query){
+      const q = query.trim().toLowerCase();
+      $$('.group').forEach(g=>{
+        let any = false;
+        $$('.product-card', g).forEach(card=>{
+          const t = card.querySelector('.title').textContent.toLowerCase();
+          const ok = !q || t.includes(q);
+          card.style.display = ok ? '' : 'none';
+          if(ok) any = true;
+        });
+        g.style.display = any ? '' : 'none';
+      });
     }
 
     (async function init(){
-      // Başlık: hash’e göre (Markalar’daki gibi)
-      const hash = (location.hash||'').replace('#','');
-      const titleMap = { ithal:'İthal Ürünler', '7stick':'7 Stick', bado:'Bado' };
-      $('#pageTitle').textContent = (titleMap[hash] || 'Ürünler');
-
       try{
-        const products = await loadJSON('data/products.json');
-        const list = (hash ? products.filter(p => p.catalog===hash) : products);
+        const [brands, products] = await Promise.all([
+          loadJSON('data/brands.json'),
+          loadJSON('data/products.json')
+        ]);
 
-        const wrap = $('#productList');
-        wrap.innerHTML = '';
-        if(list.length===0){
-          const empty = document.createElement('div');
-          empty.className = 'list-empty';
-          empty.textContent = 'Bu kategoride ürün bulunamadı.';
-          wrap.appendChild(empty);
-        }else{
-          list.forEach(p => wrap.appendChild(listItem(p)));
-        }
+        // katalog → görünen ad eşlemesi
+        const nameOf = Object.fromEntries(brands.map(b => [b.id, b.name]));
+        // URL hash ile tek katalogu odaklamak istersek
+        const hash = (location.hash||'').slice(1);
+
+        // gruplandır
+        const groupsMap = new Map();
+        products.forEach(p=>{
+          if(hash && p.catalog !== hash) return; // filtre
+          const key = p.catalog;
+          if(!groupsMap.has(key)) groupsMap.set(key, []);
+          groupsMap.get(key).push(p);
+        });
+
+        // sırayı markalar.json’daki sıraya göre kur; kalanlar sona
+        const order = brands.map(b=>b.id).concat(
+          [...groupsMap.keys()].filter(k => !brands.some(b=>b.id===k))
+        );
+
+        const wrap = $('#groups'); wrap.innerHTML = '';
+        order.forEach(cat=>{
+          const items = groupsMap.get(cat);
+          if(!items || !items.length) return;
+          const label = (nameOf[cat] || cat || '').toString().toUpperCase();
+          wrap.appendChild(makeGroup(label, items));
+        });
+
+        // arama
+        $('#q').addEventListener('input', (e)=> applyFilter(e.target.value));
         $('#y').textContent = new Date().getFullYear();
       }catch(e){
-        console.error(e); alert('Ürünler yüklenemedi.');
+        console.error(e);
+        alert('Ürünler yüklenemedi.');
       }
     })();
   </script>

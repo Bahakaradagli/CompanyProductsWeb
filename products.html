@@ -10,20 +10,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- stiller -->
+  <!-- ortak stiller + header -->
   <link rel="stylesheet" href="common.css">
-  <link rel="stylesheet" href="index.css"><!-- header için -->
+  <link rel="stylesheet" href="index.css">
+  <!-- bu sayfanın listesi -->
   <link rel="stylesheet" href="products.css">
 </head>
 <body>
-  <!-- ==== DESKTOP NAV ==== -->
+  <!-- ==== DESKTOP NAV (Glide benzeri) ==== -->
   <header class="desknav" role="banner" style="--accent:#54577D">
     <div class="desknav__wrap">
       <div class="desknav__inner">
+
+        <!-- Sol: Logo + Başlık -->
         <div class="desknav__brand">
-          <img class="desknav__logo" src="assets/logo-150.png" alt="Marmara Dağıtım Logo" onerror="this.style.display='none'">
+          <img class="desknav__logo"
+               src="assets/logo-150.png"
+               alt="Marmara Dağıtım Logo"
+               onerror="this.style.display='none'">
           <span class="desknav__title">MARMARA DAĞITIM</span>
         </div>
+
+        <!-- Sağ: Sekmeler -->
         <nav class="desknav__tabs" aria-label="Ana gezinme">
           <a class="desknav__tab" href="index.html">
             <span class="desknav__icon" aria-hidden="true">
@@ -49,32 +57,13 @@
   </header>
 
   <!-- ==== SAYFA İÇERİĞİ ==== -->
-  <main class="container">
-    <section class="products-head">
-      <h2 class="products-title">Ürünler</h2>
+  <main class="list-container">
+    <div class="list-inner">
+      <h1 class="list-title" id="pageTitle">ÜRÜNLER</h1>
 
-      <div class="products-toolbar" role="search">
-        <label class="field select">
-          <select id="catalogSelect" aria-label="Katalog seç">
-            <!-- JS ile doldurulacak -->
-          </select>
-        </label>
-
-        <label class="field search" aria-label="Ürün ara">
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path d="M8.5 15.5a7 7 0 1 1 4.95-2.05l4.3 4.3-1.4 1.4-4.3-4.3A7 7 0 0 1 8.5 15.5Z" stroke="currentColor" stroke-width="1.5"/>
-          </svg>
-          <input id="searchInput" type="search" placeholder="Ara" autocomplete="off"/>
-        </label>
+      <div id="productList" class="list">
+        <!-- JS ile doldurulacak -->
       </div>
-    </section>
-
-    <section id="productGrid" class="products-grid" aria-live="polite" aria-busy="true"></section>
-
-    <div id="emptyState" class="empty hidden" role="status">
-      <div class="empty__icon" aria-hidden="true">🔎</div>
-      <p class="empty__title">Ürün bulunamadı</p>
-      <p class="empty__desc">Filtreleri değiştirip tekrar deneyin.</p>
     </div>
   </main>
 
@@ -82,84 +71,79 @@
     <small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small>
   </footer>
 
-  <!-- ==== JS ==== -->
+  <!-- JS -->
   <script>
-    const $ = s => document.querySelector(s);
-    const $$ = s => [...document.querySelectorAll(s)];
-    async function loadJSON(p){ const r=await fetch(p,{cache:'no-store'}); if(!r.ok) throw new Error(p); return r.json(); }
+    const $ = (s, r = document) => r.querySelector(s);
 
-    let CATALOGS = [];
-    let PRODUCTS = [];
-    let currentCatalog = '';
-
-    function fillCatalogSelect(){
-      const sel = $('#catalogSelect');
-      sel.innerHTML = CATALOGS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-      // hash'ten gelen katalog varsa seç
-      const hash = (location.hash||'').replace('#','');
-      if(hash && CATALOGS.some(c=>c.id===hash)){ sel.value = hash; currentCatalog = hash; }
-      else { currentCatalog = sel.value; }
+    async function loadJSON(url){
+      const res = await fetch(url, {cache: 'no-store'});
+      if(!res.ok) throw new Error(url);
+      return res.json();
     }
 
-    function productCard(p){
-      const card = document.createElement('article');
-      card.className = 'p-card';
-      const catName = (CATALOGS.find(c=>c.id===p.catalog)||{}).name || '';
-      card.innerHTML = `
-        <div class="p-thumb">
-          <img src="${p.img}" alt="${p.name}"
-               onerror="this.src='https://dummyimage.com/600x600/0b0d12/ffffff&text='+encodeURIComponent('${p.name.substring(0,12)}')">
+    function fallbackImg(imgEl, text='IMG'){
+      imgEl.onerror = null;
+      imgEl.src = 'https://dummyimage.com/160x160/1a1a1a/ffffff&text=' + encodeURIComponent(text);
+    }
+
+    function listItem(p){
+      const row = document.createElement('a');
+      row.className = 'list-item';
+      row.href = '#'; // detay sayfan yoksa # bırak
+
+      row.innerHTML = `
+        <div class="list-left">
+          <img class="list-thumb" src="${p.img}" alt="${p.name}">
+          <div class="list-text">
+            <div class="list-name">${p.name}</div>
+          </div>
         </div>
-        <div class="p-body">
-          <h3 class="p-title">${p.name}</h3>
-          <p class="p-sub">${catName}</p>
-        </div>`;
-      return card;
-    }
+        <div class="list-right" aria-hidden="true">
+          <svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      `;
 
-    function render(list){
-      const grid = $('#productGrid');
-      const empty = $('#emptyState');
-      grid.innerHTML = '';
-      if(list.length === 0){
-        grid.classList.add('hidden');
-        empty.classList.remove('hidden');
-        return;
-      }
-      empty.classList.add('hidden');
-      grid.classList.remove('hidden');
-      list.forEach(p => grid.appendChild(productCard(p)));
-    }
+      const img = $('.list-thumb', row);
+      img.onerror = () => fallbackImg(img, (p.name||'U')[0]);
 
-    function filter(){
-      const q = ($('#searchInput').value||'').toLowerCase();
-      const sel = $('#catalogSelect').value;
-      currentCatalog = sel;
-      const list = PRODUCTS.filter(p => p.catalog===sel && p.name.toLowerCase().includes(q));
-      render(list);
-    }
-
-    function onHashChange(){
-      const hash = (location.hash||'').replace('#','');
-      if(hash && hash !== currentCatalog && CATALOGS.some(c=>c.id===hash)){
-        $('#catalogSelect').value = hash;
-        filter();
-      }
+      return row;
     }
 
     (async function init(){
-      try{
-        CATALOGS  = await loadJSON('data/catalogs.json');
-        PRODUCTS  = await loadJSON('data/products.json');
-        fillCatalogSelect();
-        filter();
-        $('#y').textContent = new Date().getFullYear();
+      // aktif tab güvence
+      document.querySelectorAll('.desknav__tab').forEach(t => {
+        t.setAttribute('aria-current', t.getAttribute('href')==='products.html' ? 'page' : 'false');
+      });
 
-        $('#catalogSelect').addEventListener('change', filter);
-        $('#searchInput').addEventListener('input', filter);
-        window.addEventListener('hashchange', onHashChange);
-        // erişebilirlik
-        $('#productGrid').setAttribute('aria-busy','false');
+      const hash = (location.hash||'').replace('#',''); // örn: ithal
+      const titleMap = {
+        ithal: 'İTHAL ÜRÜNLER',
+        '7stick': '7 STICK',
+        bado: 'BADO'
+      };
+      $('#pageTitle').textContent = titleMap[hash] || 'ÜRÜNLER';
+
+      try{
+        const [products] = await Promise.all([
+          loadJSON('data/products.json')
+        ]);
+
+        // filtre
+        const list = (hash ? products.filter(p => p.catalog===hash) : products);
+
+        const wrap = $('#productList');
+        wrap.innerHTML = '';
+
+        if(list.length === 0){
+          const empty = document.createElement('div');
+          empty.className = 'list-empty';
+          empty.textContent = 'Bu kategoride ürün bulunamadı.';
+          wrap.appendChild(empty);
+        } else {
+          list.forEach(p => wrap.appendChild(listItem(p)));
+        }
+
+        $('#y').textContent = new Date().getFullYear();
       }catch(e){
         console.error(e);
         alert('Ürünler yüklenemedi.');

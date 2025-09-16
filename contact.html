@@ -4,12 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Marmara Dağıtım – İletişim</title>
+
+  <!-- font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- ortak ve sayfaya özel stil -->
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="contact.css">
 </head>
 <body>
+  <!-- Üst gezinme -->
   <header class="topbar">
     <div class="container">
       <nav class="nav" aria-label="Ana gezinme">
@@ -18,26 +24,39 @@
         </div>
         <a class="tab" href="index.html">Markalar</a>
         <a class="tab" href="products.html">Ürünler</a>
-        <a class="tab" href="contact.html">İletişim</a>
+        <a class="tab" href="contact.html" aria-current="page">İletişim</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <div class="hero">
-      <div class="logo-badge">MD</div>
-      <h2 style="margin:4px 0 6px">MARMARA DAĞITIM</h2>
-      <p class="lead">Hızlı ve güvenilir hizmet anlayışıyla yanınızdayız. Bölgenizdeki temsilcilere buradan ulaşabilirsiniz.</p>
-    </div>
-    <div id="people" class="people"></div>
+    <!-- KAPAK / HERO -->
+    <section class="contact-hero">
+      <div class="contact-hero__img"
+           style="--hero:url('assets/hero.jpg');"
+           role="img" aria-label="Marmara Dağıtım Kapak Görseli"></div>
+      <div class="contact-hero__content">
+        <h2 class="contact-hero__title">MARMARA DAĞITIM</h2>
+        <p class="contact-hero__desc">
+          Hızlı ve güvenilir hizmet anlayışıyla yanınızdayız. Uygulamamız üzerinden
+          bölgenizdeki tüm satış temsilcilerine ve ekip yöneticisine ulaşabilirsiniz.
+          Bayiliğini yaptığımız markalar ve ürünlerimize sitemiz içerisinden erişebilirsiniz.
+        </p>
+      </div>
+    </section>
+
+    <!-- LİSTE -->
+    <section class="contact-list" id="people" aria-label="Satış Temsilcileri">
+      <!-- JS doldurur -->
+    </section>
   </main>
 
   <footer><small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small></footer>
 
-  <!-- aktif sekme -->
+  <!-- Aktif sekme -->
   <script>
     (function(){
-      const here = location.pathname.split('/').pop() || 'contact.html';
+      const here = 'contact.html';
       document.querySelectorAll('.tab').forEach(t=>{
         const isHere = (t.getAttribute('href')||'') === here;
         t.setAttribute('aria-current', isHere?'page':'false');
@@ -49,19 +68,46 @@
   <script>
     const $ = s => document.querySelector(s);
     async function loadJSON(p){ const r=await fetch(p,{cache:'no-store'}); if(!r.ok) throw new Error(p); return r.json(); }
+
+    function phoneHref(s){ return (s||'').replace(/\s|\(|\)/g,''); }
+
+    function personRow(p){
+      const el = document.createElement('article');
+      el.className = 'contact-row';
+      el.innerHTML = `
+        <div class="contact-row__left">
+          <img class="contact-row__avatar" src="${p.img}" alt="${p.name}"
+               onerror="this.src='https://dummyimage.com/128x128/1f1f1f/ffffff&text='+encodeURIComponent('${(p.name||'M').slice(0,1)}')">
+          <div class="contact-row__text">
+            <p class="contact-row__name">${p.name}</p>
+            <p class="contact-row__area">${p.title||''}</p>
+          </div>
+        </div>
+        <div class="contact-row__right">
+          <a class="contact-btn" href="tel:${phoneHref(p.phone)}" aria-label="Ara">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M22 16.92v2a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07
+                       19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.1 3.9
+                       2 2 0 0 1 4.11 2h2a2 2 0 0 1 2 1.72c.12.9.31 1.77.57 2.6a2
+                       2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.48-1.14a2
+                       2 0 0 1 2.11-.45c.83.26 1.7.45 2.6.57A2 2 0 0 1 22 16.92Z"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Ara</span>
+          </a>
+        </div>`;
+      return el;
+    }
+
     (async function init(){
       try{
         const people = await loadJSON('data/people.json');
         const wrap = $('#people'); wrap.innerHTML='';
-        people.forEach(p=>{
-          const row = document.createElement('div'); row.className='person';
-          row.innerHTML = `
-            <img class="avatar" src="${p.img}" alt="${p.name}" onerror="this.src='https://dummyimage.com/88x88/0b0d12/ffffff&text='+encodeURIComponent('${(p.name||'M').slice(0,1)}')">
-            <div><h5>${p.name}</h5><small>${p.title||''}</small></div>
-            <a class="btn" href="tel:${(p.phone||'').replace(/\\s|\\(/g,'')}">Ara</a>`;
-          wrap.appendChild(row);
-        });
-        document.getElementById('y').textContent=new Date().getFullYear();
+        people.forEach(p => wrap.appendChild(personRow(p)));
+        $('#y').textContent = new Date().getFullYear();
+
+        // İsteğe bağlı: bazı kişilerin “Call” yazmasını istersen burada değiştirebilirsin.
+        // document.querySelectorAll('.contact-btn span').forEach(s => s.textContent = 'Call');
       }catch(e){ console.error(e); alert('Kişiler yüklenemedi.'); }
     })();
   </script>

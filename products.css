@@ -1,53 +1,49 @@
-/* Tema değişkenleri */
+/* Sayfa zemin ve konteyner */
 :root{
-  --brand:#54577D;              /* mor şerit rengi (index.css ile uyumlu) */
+  --brand:#54577D;
   --bg:#0f0f10;
+  --panel:#131416;
   --line:rgba(255,255,255,.08);
   --text:#EDEEF1;
   --muted:#A8AFBD;
-
-  /* Görseldeki gibi soldan iç boşluk.
-     Büyük ekranda ~180px, küçüldükçe 16px'e iner. */
-  --gutter: clamp(16px, 6vw, 180px);
 }
 
 html,body{height:100%}
 body{
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
   margin: 0;
 }
 
-/* ===== Mor alt şerit: Başlık burada ===== */
-.subbar{
-  background: var(--brand);
-  border-bottom: 1px solid rgba(255,255,255,.15);
-  padding: 14px 0;               /* şerit yüksekliği */
-}
-.subbar__title{
-  margin: 0;
-  padding-left: var(--gutter);    /* soldan aynı hiza */
-  padding-right: 16px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .02em;
-  color: #fff;
-  font-size: clamp(20px, 2.6vw, 34px); /* görseldeki büyüklük */
-}
+/* Üst mor şerit index.css’ten gelir (desknav) */
 
-/* ===== Liste alanı ===== */
-.list-container{ padding-top: 4px; }
+/* Liste alanı */
+.list-container{
+  padding-top: 12px;
+}
 .list-inner{
-  width: 100%;
+  max-width: 960px;   /* daha dar */
   margin: 0 auto;
-  padding-left: var(--gutter);   /* tüm satırlar başlıkla aynı hizada */
-  padding-right: 16px;
+}
+
+/* Başlık */
+.list-title{
+  margin: 12px 12px;
+  padding: 8px 0;
+  font-size: clamp(18px, 3vw, 28px);
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: #E9ECF8;
 }
 
 /* Liste */
 .list{ background: transparent; }
-.list-empty{ margin: 24px 0; color: var(--muted); }
+.list-empty{
+  margin: 16px 12px;
+  color: var(--muted);
+}
 
 /* Satır */
 .list-item{
@@ -55,44 +51,63 @@ body{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 18px 0;               /* yatay paddingleri üst kapsayıcı veriyor */
+  gap: 8px;
+  padding: 10px 12px;       /* küçültüldü */
   border-top: 1px solid var(--line);
   text-decoration: none;
   color: inherit;
   transition: background .15s ease;
 }
-.list-item:first-child{ border-top: 0; margin-top: 6px; }
-.list-item:hover{ background: rgba(255,255,255,.03); }
+.list-item:first-child{
+  border-top: 0;
+  margin-top: 4px;
+}
+.list-item:hover{
+  background: rgba(255,255,255,.03);
+}
 
 /* Sol taraf */
-.list-left{ display:flex; align-items:center; gap:18px; }
+.list-left{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .list-thumb{
-  width: 108px; height: 108px;
-  object-fit: cover; border-radius: 14px;
+  width: 72px;              /* küçültüldü */
+  height: 72px;
+  object-fit: cover;
+  border-radius: 10px;
   background: #0b0c0f;
-  box-shadow: 0 4px 18px rgba(0,0,0,.25), inset 0 0 0 1px var(--line);
+  box-shadow: 0 2px 8px rgba(0,0,0,.25), inset 0 0 0 1px var(--line);
 }
 @media (max-width: 640px){
-  .list-thumb{ width: 84px; height: 84px; border-radius: 12px; }
+  .list-thumb{ width: 60px; height: 60px; border-radius: 8px; }
 }
 
-/* Metin */
+/* Metinler */
 .list-text{ display:flex; flex-direction:column; }
 .list-name{
-  font-size: clamp(15px, 2.2vw, 20px);
-  font-weight: 700;
+  font-size: clamp(13px, 2vw, 16px);  /* küçültüldü */
+  font-weight: 600;
   letter-spacing: .01em;
   color: #EAEAF1;
   text-transform: uppercase;
 }
 
 /* Sağdaki ok */
-.list-right{ margin-left: auto; padding-left: 8px; }
-.chev{ width:22px; height:22px; color:#C4C6D6; opacity:.9; }
+.list-right{ margin-left: auto; padding-left: 6px; }
+.chev{
+  width: 18px; height: 18px;          /* küçültüldü */
+  color: #C4C6D6;
+  opacity: .9;
+}
 
-/* Full-bleed alt çizgi hissi */
+/* Alt çizgi */
 .list-item::after{
-  content:''; position:absolute; inset:auto 0 0 0; height:1px;
-  background: var(--line); transform: translateY(.5px);
+  content:'';
+  position:absolute;
+  inset:auto 0 0 0;
+  height:1px;
+  background: var(--line);
+  transform: translateY(.5px);
 }

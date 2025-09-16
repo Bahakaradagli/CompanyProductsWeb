@@ -1,0 +1,6 @@
+[
+  { "id": "7stick",   "name": "7 STICK",   "img": "assets/brands/7stick.png",   "count": 12 },
+  { "id": "bado",     "name": "BADO",      "img": "assets/brands/bado.png",     "count": 8 },
+  { "id": "bounty",   "name": "BOUNTY",    "img": "assets/brands/bounty.png",   "count": 2 },
+  { "id": "snickers", "name": "SNICKERS",  "img": "assets/brands/snickers.png", "count": 1 }
+]

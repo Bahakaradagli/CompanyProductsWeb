@@ -1,4 +1,4 @@
-/* ========= Tema tonları ========= */
+/* ========= Tema ========= */
 :root{
   --bg:#0f1115;
   --panel:#1a1c24;
@@ -6,111 +6,105 @@
   --border:rgba(255,255,255,.08);
   --muted:#a3a8b3;
   --text:#eaeef5;
-  --accent:#54577D;          /* buton ve vurgu rengi (glide tonuna yakın) */
+  --accent:#54577D;              /* Glide tonuna yakın */
   --accent-border:rgba(120,122,160,.45);
 }
 
-/* Sayfa arka planı ve tipografi küçük dokunuş */
 body{ background:var(--bg); color:var(--text); }
 .container{ max-width:1100px; padding:0 20px; }
 
-/* ========= HERO (ekran görüntüsündeki baş kısım) ========= */
+/* ========= HERO ========= */
 .contact-hero{
-  margin: 28px 0 10px;
-  text-align: center;
-  background: transparent;     /* arka panel yok */
-  border: 0;
+  margin: 28px 0 6px;
+  text-align:center;
 }
 .contact-hero__img{
-  /* Ekran görüntüsündeki büyük yuvarlak logo */
-  --size: 150px;
-  width: var(--size);
-  height: var(--size);
-  margin: 0 auto 14px;
-  border-radius: 50%;
-  background: center/70% no-repeat #0b0d12;
+  --size: 160px;
+  width:var(--size); height:var(--size);
+  margin: 0 auto 16px;
+  border-radius:50%;
+  background:#0b0d12 center/70% no-repeat;  /* görseli daire içinde ortala */
   background-image: var(--hero, none);
+  border:1px solid var(--border);
   box-shadow:
     0 10px 30px rgba(0,0,0,.35),
     inset 0 0 0 6px rgba(255,255,255,.06);
-  border: 1px solid var(--border);
 }
-@media (min-width:768px){
-  .contact-hero__img{ --size: 170px; margin-bottom: 16px; }
-}
-.contact-hero__content{
-  padding: 0 8px 8px;
-  background: transparent;
-  border: 0;
-}
+@media (min-width:768px){ .contact-hero__img{ --size: 170px; } }
+
 .contact-hero__title{
-  margin: 0 0 10px;
-  font-size: clamp(22px, 3.2vw, 32px);
-  line-height: 1.15;
+  margin:0 0 8px;
+  font-size: clamp(22px,3.2vw,32px);
   font-weight: 800;
-  letter-spacing: .3px;
-  color: #fff;
-  text-transform: uppercase;
+  letter-spacing:.3px;
+  color:#fff;
+  text-transform:uppercase;
+  line-height:1.15;
 }
 .contact-hero__desc{
-  margin: 0 auto;
-  max-width: 980px;
-  color: var(--muted);
-  line-height: 1.7;
-  font-size: clamp(14px, 1.6vw, 16px);
+  margin:0 auto 6px;
+  max-width:980px;
+  color:var(--muted);
+  line-height:1.7;
+  font-size:clamp(14px,1.6vw,16px);
 }
 
-/* ========= LİSTE / KİŞİ KARTLARI ========= */
+/* ========= LİSTE ========= */
 .contact-list{
-  display: grid;
-  gap: 12px;
-  margin: 16px 0 40px;
+  display:grid;
+  gap:14px;
+  margin: 14px 0 40px;
 }
+
+/* Satır yapısı */
 .contact-row{
-  display: flex; align-items: center; gap: 14px;
-  padding: 12px 12px 12px 14px;
-  background: var(--panel-2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  display:flex; align-items:center; gap:14px;
+  padding: 12px 12px 12px 16px;
+  background:var(--panel-2);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
-.contact-row__left{ display: flex; align-items: center; gap: 12px; min-width: 0; }
+.contact-row__left{ display:flex; align-items:center; gap:12px; min-width:0; }
+
 .contact-row__avatar{
-  width: 56px; height: 56px; border-radius: 50%;
-  object-fit: cover; background:#0b0d12;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.06);
+  width:56px; height:56px; border-radius:50%;
+  object-fit:cover; background:#0b0d12;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06);
 }
-.contact-row__text{ min-width: 0; }
+
+.contact-row__text{ min-width:0; }
 .contact-row__name{
-  margin: 0; font-weight: 700; font-size: 16px; color:#fff;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin:0; font-weight:700; font-size:16px; color:#fff;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .contact-row__area{
-  margin: 3px 0 0; font-size: 14px; color: var(--muted);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin:3px 0 0; font-size:14px; color:var(--muted);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 
-/* Sağdaki “Ara / Call” butonu – yuvarlak köşe, glide benzeri */
+/* Sağdaki buton – Glide tarzı pill */
 .contact-row__right{ margin-left:auto; }
 .contact-btn{
   display:inline-flex; align-items:center; gap:8px;
-  height: 40px; padding: 0 14px;
-  background: #191a24;
-  color:#c8c9d5; text-decoration:none; font-weight: 600;
-  border-radius: 999px;
-  border: 1px solid var(--accent-border);
-  transition: background .15s ease, transform .05s ease, border-color .15s ease;
+  height:40px; padding:0 14px;
+  background:#191a24;
+  color:#c8c9d5; text-decoration:none; font-weight:600;
+  border-radius:999px;
+  border:1px solid var(--accent-border);
+  transition: background .15s ease, border-color .15s ease, transform .05s ease;
 }
 .contact-btn svg{ display:block }
-.contact-btn:hover{ background:#1f2030; border-color: rgba(150,152,190,.6); }
-.contact-btn:active{ transform: translateY(1px); }
+.contact-btn:hover{ background:#1f2030; border-color:rgba(150,152,190,.6); }
+.contact-btn:active{ transform:translateY(1px); }
 
-/* küçük ekran – buton alta gelsin */
-@media (max-width: 520px){
-  .contact-row{ flex-wrap: wrap; }
+/* Küçük ekran: buton alta gelsin */
+@media (max-width:540px){
+  .contact-row{ flex-wrap:wrap; }
   .contact-row__right{ width:100%; }
   .contact-btn{ width:100%; justify-content:center; }
 }
 
-/* ========= Footer tonu ========= */
-footer small{ color: var(--muted); }
+/* ========= Footer ========= */
+footer{ padding:26px 0 60px; text-align:center; }
+footer small{ color:var(--muted); }

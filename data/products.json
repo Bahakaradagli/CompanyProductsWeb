@@ -1,0 +1,14 @@
+[
+  { "id": "p1",  "name": "7 STICK Yumuşak Şeker Ayıcık",         "catalog": "7stick", "img": "assets/products/7stick-ayi.png" },
+  { "id": "p2",  "name": "7 STICK Yumuşak Şeker Karışık",        "catalog": "7stick", "img": "assets/products/7stick-karisik.png" },
+  { "id": "p3",  "name": "7 STICK Yumuşak Şeker Kola",           "catalog": "7stick", "img": "assets/products/7stick-kola.png" },
+  { "id": "p4",  "name": "7 STICK Bubble Gum 7'li",              "catalog": "7stick", "img": "assets/products/7stick-bubble.png" },
+  { "id": "p5",  "name": "7 STICK Draje Sakız Şekersiz 80 gr",   "catalog": "7stick", "img": "assets/products/7stick-draje.png" },
+
+  { "id": "p20", "name": "BADO Kedi Maması – Kuzu",              "catalog": "bado",   "img": "assets/products/bado-lamb.png" },
+  { "id": "p21", "name": "BADO Kedi Maması – Tavuk",             "catalog": "bado",   "img": "assets/products/bado-chicken.png" },
+  { "id": "p22", "name": "BADO Kedi Maması – Somon",             "catalog": "bado",   "img": "assets/products/bado-salmon.png" },
+
+  { "id": "p30", "name": "SNICKERS Bar 51 gr (24×)",             "catalog": "ithal",  "img": "assets/products/snickers-51.png" },
+  { "id": "p31", "name": "BOUNTY Bar 57 gr",                     "catalog": "ithal",  "img": "assets/products/bounty-57.png" }
+]

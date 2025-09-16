@@ -1,0 +1,84 @@
+/* Koyu tema ve renkler (Glide benzeri tonlar) */
+:root{
+  --n0:#0A0A0A; --n50:#171717; --n100:#1F1F1F; --n200:#262626; --n400:#4F4F4F; --n700:#B7B7B7; --n900:#FFFFFF;
+  --text:#ffffff; --text-pale:rgba(255,255,255,.8); --text-xpale:rgba(255,255,255,.7);
+  --accent:#54577D;
+}
+
+/* HERO */
+.contact-hero{
+  position: relative;
+  margin: 18px 0 12px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--n100);
+  border: 1px solid rgba(255,255,255,.08);
+}
+.contact-hero__img{
+  width: 100%;
+  height: 220px;
+  background: center/cover no-repeat var(--n100);
+  background-image: var(--hero, none);
+  filter: saturate(1) contrast(1.05);
+}
+@media(min-width:768px){
+  .contact-hero__img{ height: 280px; }
+}
+.contact-hero__content{
+  padding: 16px 16px 18px;
+  background: linear-gradient(180deg, rgba(84,87,125,.25), rgba(23,23,23,.6));
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.contact-hero__title{
+  margin: 0 0 6px; font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing:.2px;
+}
+.contact-hero__desc{
+  margin: 0; color: var(--text-pale); line-height: 1.55;
+}
+
+/* LİSTE */
+.contact-list{
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 28px;
+}
+.contact-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  background: var(--n100);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+}
+.contact-row__left{ display: flex; align-items: center; gap: 12px; min-width: 0; }
+.contact-row__avatar{
+  width: 56px; height: 56px; border-radius: 50%; object-fit: cover;
+  background: var(--n50);
+}
+.contact-row__text{ min-width: 0; }
+.contact-row__name{
+  margin: 0; font-weight: 600; font-size: 15px; color: var(--n900);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.contact-row__area{
+  margin: 2px 0 0; font-size: 13px; color: var(--text-xpale);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.contact-row__right{ margin-left: auto; flex: 0 0 auto; }
+.contact-btn{
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff; padding: 10px 12px;
+  border-radius: 12px; text-decoration: none; border: 1px solid rgba(255,255,255,.08);
+  line-height: 1; font-weight: 600;
+}
+.contact-btn svg{ display:block }
+
+/* Küçük ekranlarda butonu satır alta atma */
+@media(max-width:420px){
+  .contact-row{ flex-wrap: wrap; }
+  .contact-row__right{ width: 100%; }
+  .contact-btn{ width: 100%; justify-content: center; }
+}

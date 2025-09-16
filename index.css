@@ -1,0 +1,59 @@
+/* sayfa genel */
+:root{ --desknav-accent: var(--accent, #54577D); }
+body{ background:#0f1115; color:#e5e7eb; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; }
+
+/* container genişliği (common.css ile uyumlu) */
+.container{ max-width:1100px; margin:0 auto; padding:0 16px; }
+
+/* ==== DESKTOP NAV ==== */
+.desknav{
+  position: sticky; top:0; z-index: 40;
+  background: var(--desknav-accent);
+  box-shadow: 0 1px 0 rgba(255,255,255,.15) inset;
+}
+.desknav__wrap{
+  max-width: 1100px; margin: 0 auto; padding: 0 16px;
+}
+.desknav__inner{
+  display:flex; align-items:center; justify-content:space-between;
+  height: 64px; gap: 12px;
+}
+
+/* sol taraf */
+.desknav__brand{ display:flex; align-items:center; gap:12px; min-width:0; }
+.desknav__logo{
+  width:40px; height:40px; border-radius:12px; object-fit:cover;
+  background:#0A0A0A; display:block;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.15) inset;
+}
+.desknav__title{
+  font-weight:700; letter-spacing:.2px; white-space:nowrap;
+  color:#fff;
+}
+
+/* sekmeler */
+.desknav__tabs{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.desknav__tab{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 12px; border-radius:10px; text-decoration:none;
+  color:#fff; font-weight:600; line-height:1;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.12);
+  transition: background .15s ease, transform .1s ease;
+}
+.desknav__tab:hover{ background: rgba(255,255,255,.18); transform: translateY(-1px); }
+.desknav__tab[aria-current="page"]{
+  background:#ffffff; color:#1f2937;
+}
+.desknav__icon{
+  width:20px; height:20px; display:grid; place-items:center; flex:0 0 auto;
+}
+.desknav__icon svg{ width:20px; height:20px; }
+
+/* mobil */
+@media (max-width: 520px){
+  .desknav__title{ display:none; } /* sadece logo kalsın */
+}
+
+/* ==== MARKALAR GRID (common.css ile birlikte çalışır) ==== */
+.brands a.brand{ text-decoration:none; color:inherit; }

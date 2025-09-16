@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marmara Dağıtım – Markalar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <nav class="nav" aria-label="Ana gezinme">
+        <div class="logo" role="img" aria-label="Marmara Dağıtım">
+          <span class="logo-badge">MD</span><span>MARMARA DAĞITIM</span>
+        </div>
+        <a class="tab" href="index.html">Markalar</a>
+        <a class="tab" href="products.html">Ürünler</a>
+        <a class="tab" href="contact.html">İletişim</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2 style="margin:10px 0 16px">Markalar</h2>
+    <div id="brands" class="brands"></div>
+  </main>
+
+  <footer><small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small></footer>
+
+  <!-- aktif sekme -->
+  <script>
+    (function(){
+      const here = location.pathname.split('/').pop() || 'index.html';
+      document.querySelectorAll('.tab').forEach(t=>{
+        const isHere = (t.getAttribute('href')||'') === here || (here==='' && t.getAttribute('href')==='index.html');
+        t.setAttribute('aria-current', isHere?'page':'false');
+      });
+    })();
+  </script>
+
+  <!-- JSON'dan Markalar -->
+  <script>
+    const $ = s => document.querySelector(s);
+    async function loadJSON(p){ const r=await fetch(p,{cache:'no-store'}); if(!r.ok) throw new Error(p); return r.json(); }
+    (async function init(){
+      try{
+        const [catalogs, brands] = await Promise.all([
+          loadJSON('data/catalogs.json'),
+          loadJSON('data/brands.json')
+        ]);
+        const wrap = $('#brands'); wrap.innerHTML='';
+        brands.forEach(b=>{
+          const a=document.createElement('a'); a.href='products.html#'+(catalogs.find(c=>c.id===b.id)?.id||'');
+          a.className='brand';
+          a.innerHTML = `
+            <img src="${b.img}" alt="${b.name} logosu" onerror="this.src='https://dummyimage.com/88x88/0b0d12/ffffff&text='+encodeURIComponent('${(b.name||'M')[0]}')">
+            <div><h4>${b.name}</h4><small>${b.count||''} ürün</small></div>`;
+          wrap.appendChild(a);
+        });
+        document.getElementById('y').textContent=new Date().getFullYear();
+      }catch(e){ console.error(e); alert('Markalar yüklenemedi.'); }
+    })();
+  </script>
+</body>
+</html>

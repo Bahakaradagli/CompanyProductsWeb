@@ -1,0 +1,6 @@
+[
+  { "name": "Rıdvan Çimen",     "title": "Ekip Yöneticisi",                "phone": "+90 555 000 0000", "img": "assets/people/ridvan.jpg" },
+  { "name": "Mehmet Ali Kara",  "title": "Bağcılar / Güngören / Laleli",  "phone": "+90 555 000 0001", "img": "assets/people/mehmet.jpg" },
+  { "name": "Ali Yerli",        "title": "Esenyurt / B.Çekmece / Başakşehir", "phone": "+90 555 000 0002", "img": "assets/people/ali.jpg" },
+  { "name": "Ahmet Kanat",      "title": "Avcılar / Beylikdüzü",           "phone": "+90 555 000 0003", "img": "assets/people/ahmet.jpg" }
+]

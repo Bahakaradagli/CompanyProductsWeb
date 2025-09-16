@@ -12,8 +12,8 @@
 
   <!-- ortak stiller -->
   <link rel="stylesheet" href="common.css">
-  <!-- sayfa ve header için -->
   <link rel="stylesheet" href="index.css">
+  <!-- iletişim sayfası özel stil -->
   <link rel="stylesheet" href="contact.css">
 </head>
 <body>
@@ -58,29 +58,32 @@
     </div>
   </header>
 
+  <!-- ==== MAIN ==== -->
   <main class="container">
     <!-- KAPAK / HERO -->
     <section class="contact-hero">
       <div class="contact-hero__img"
-           style="--hero:url('assets/hero.jpg');"
-           role="img" aria-label="Marmara Dağıtım Kapak Görseli"></div>
+           style="--hero:url('assets/logo-hero.png');"
+           role="img" aria-label="Marmara Dağıtım Logo"></div>
       <div class="contact-hero__content">
         <h2 class="contact-hero__title">MARMARA DAĞITIM</h2>
         <p class="contact-hero__desc">
-          Hızlı ve güvenilir hizmet anlayışıyla yanınızdayız. Uygulamamız üzerinden
-          bölgenizdeki tüm satış temsilcilerine ve ekip yöneticisine ulaşabilirsiniz.
+          Hızlı ve güvenilir hizmet anlayışıyla yanınızdayız.  
+          Uygulamamız üzerinden bölgenizdeki tüm satış temsilcilerine ve ekip yöneticisine ulaşabilirsiniz.  
           Bayiliğini yaptığımız markalar ve ürünlerimize sitemiz içerisinden erişebilirsiniz.
         </p>
       </div>
     </section>
 
-    <!-- LİSTE -->
+    <!-- KİŞİLER -->
     <section class="contact-list" id="people" aria-label="Satış Temsilcileri">
-      <!-- JS doldurur -->
+      <!-- JS dolduracak -->
     </section>
   </main>
 
-  <footer><small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small></footer>
+  <footer>
+    <small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small>
+  </footer>
 
   <!-- JSON’dan kişiler -->
   <script>
@@ -123,7 +126,7 @@
         const wrap = $('#people'); wrap.innerHTML='';
         people.forEach(p => wrap.appendChild(personRow(p)));
         $('#y').textContent = new Date().getFullYear();
-      }catch(e){ console.error(e); alert('Kişiler yüklenemedi.'); }
+      }catch(e){ console.error(e); }
     })();
   </script>
 </body>

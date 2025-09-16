@@ -1,58 +1,45 @@
-/* Sayfa zemin ve konteyner */
+/* Sayfa genel (index.css ile aynı görsel hiyerarşi) */
 :root{
   --brand:#54577D;
-  --bg:#0f0f10;
+  --bg:#0f1115;
   --panel:#131416;
   --line:rgba(255,255,255,.08);
   --text:#EDEEF1;
   --muted:#A8AFBD;
 }
+body{ background: var(--bg); color: var(--text); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
 
-html,body{height:100%}
-body{
-  background: var(--bg);
-  color: var(--text);
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-  margin: 0;
-}
+/* container: index.css/common.css ile aynı genişlik */
+.container{ max-width:1100px; margin:0 auto; padding:0 16px; }
 
-/* Üst mor şerit index.css’ten gelir (desknav) */
-
-/* Liste alanı */
-.list-container{
-  padding-top: 12px;
-}
-.list-inner{
-  max-width: 960px;   /* daha dar */
-  margin: 0 auto;
-}
-
-/* Başlık */
-.list-title{
-  margin: 12px 12px;
-  padding: 8px 0;
+/* === Başlık: Markalar h2 ile birebir eşleşir === */
+.page-title{
+  margin:16px 0 16px;              /* aynı konum */
+  font-weight:700;
+  letter-spacing:.02em;
+  text-transform:none;
+  color:#E9ECF8;
+  /* Markalar başlığıyla aynı ölçek: */
   font-size: clamp(18px, 3vw, 28px);
-  font-weight: 700;
-  letter-spacing: .02em;
-  text-transform: uppercase;
-  color: #E9ECF8;
 }
 
-/* Liste */
+/* === Ürün Listesi === */
+.products{ margin-top: 4px; }
 .list{ background: transparent; }
+
 .list-empty{
-  margin: 16px 12px;
+  margin: 16px 0;
   color: var(--muted);
 }
 
-/* Satır */
+/* Satır (ürün container) — kompakt */
 .list-item{
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 10px 12px;       /* küçültüldü */
+  padding: 8px 10px;               /* kompakt */
   border-top: 1px solid var(--line);
   text-decoration: none;
   color: inherit;
@@ -70,24 +57,23 @@ body{
 .list-left{
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;                        /* sıkı */
 }
 .list-thumb{
-  width: 72px;              /* küçültüldü */
-  height: 72px;
+  width: 56px; height: 56px;        /* kompakt görsel */
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #0b0c0f;
   box-shadow: 0 2px 8px rgba(0,0,0,.25), inset 0 0 0 1px var(--line);
 }
 @media (max-width: 640px){
-  .list-thumb{ width: 60px; height: 60px; border-radius: 8px; }
+  .list-thumb{ width: 48px; height: 48px; border-radius: 7px; }
 }
 
 /* Metinler */
 .list-text{ display:flex; flex-direction:column; }
 .list-name{
-  font-size: clamp(13px, 2vw, 16px);  /* küçültüldü */
+  font-size: clamp(12px, 1.8vw, 14px);   /* küçük/okunabilir */
   font-weight: 600;
   letter-spacing: .01em;
   color: #EAEAF1;
@@ -97,9 +83,9 @@ body{
 /* Sağdaki ok */
 .list-right{ margin-left: auto; padding-left: 6px; }
 .chev{
-  width: 18px; height: 18px;          /* küçültüldü */
+  width: 14px; height: 14px;              /* küçültüldü */
   color: #C4C6D6;
-  opacity: .9;
+  opacity: .85;
 }
 
 /* Alt çizgi */

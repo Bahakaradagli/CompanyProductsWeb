@@ -10,14 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ortak stiller + header -->
+  <!-- ortak -->
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="index.css">
-  <!-- bu sayfanın listesi -->
+  <!-- bu sayfanın stilleri -->
   <link rel="stylesheet" href="products.css">
 </head>
 <body>
-  <!-- ==== DESKTOP NAV (Glide benzeri) ==== -->
+  <!-- ==== DESKTOP NAV ==== -->
   <header class="desknav" role="banner" style="--accent:#54577D">
     <div class="desknav__wrap">
       <div class="desknav__inner">
@@ -27,15 +27,21 @@
         </div>
         <nav class="desknav__tabs" aria-label="Ana gezinme">
           <a class="desknav__tab" href="index.html">
-            <span class="desknav__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 4h14m-15 0a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 4h14m-15 0a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
             <span>Markalar</span>
           </a>
           <a class="desknav__tab" href="products.html" aria-current="page">
-            <span class="desknav__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h7v7H4V7Zm9 0h7v7h-7V7ZM8 17h8v3H8v-3Z" fill="currentColor"/></svg></span>
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 7h7v7H4V7Zm9 0h7v7h-7V7ZM8 17h8v3H8v-3Z" fill="currentColor"/></svg>
+            </span>
             <span>Ürünler</span>
           </a>
           <a class="desknav__tab" href="contact.html">
-            <span class="desknav__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
             <span>İletişim</span>
           </a>
         </nav>
@@ -43,14 +49,12 @@
     </div>
   </header>
 
-  <!-- ==== MOR ALT ŞERİT (Başlık burada) ==== -->
-  <div class="subbar">
-    <h1 class="subbar__title" id="pageTitle">ÜRÜNLER</h1>
-  </div>
+  <!-- ==== SAYFA İÇERİĞİ ==== -->
+  <main class="container">
+    <!-- Markalar sayfasıyla aynı h2 konumu ve boyutu -->
+    <h2 id="pageTitle" class="page-title">Ürünler</h2>
 
-  <!-- ==== LİSTE ==== -->
-  <main class="list-container">
-    <div class="list-inner">
+    <div class="products">
       <div id="productList" class="list"><!-- JS dolduracak --></div>
     </div>
   </main>
@@ -59,6 +63,18 @@
     <small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small>
   </footer>
 
+  <!-- Aktif sekme emniyet -->
+  <script>
+    (function(){
+      const here = (location.pathname.split('/').pop() || 'products.html');
+      document.querySelectorAll('.desknav__tab').forEach(t=>{
+        const isHere = (t.getAttribute('href')||'') === here || (here==='' && t.getAttribute('href')==='products.html');
+        t.setAttribute('aria-current', isHere?'page':'false');
+      });
+    })();
+  </script>
+
+  <!-- Ürünler -->
   <script>
     const $ = (s, r=document) => r.querySelector(s);
 
@@ -90,14 +106,10 @@
     }
 
     (async function init(){
-      // aktif tab emniyet
-      document.querySelectorAll('.desknav__tab').forEach(t => {
-        t.setAttribute('aria-current', t.getAttribute('href')==='products.html' ? 'page' : 'false');
-      });
-
+      // Başlık: hash’e göre (Markalar’daki gibi)
       const hash = (location.hash||'').replace('#','');
-      const titleMap = { ithal:'İTHAL ÜRÜNLER', '7stick':'7 STICK', bado:'BADO' };
-      $('#pageTitle').textContent = titleMap[hash] || 'ÜRÜNLER';
+      const titleMap = { ithal:'İthal Ürünler', '7stick':'7 Stick', bado:'Bado' };
+      $('#pageTitle').textContent = (titleMap[hash] || 'Ürünler');
 
       try{
         const products = await loadJSON('data/products.json');

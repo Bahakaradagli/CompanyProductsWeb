@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marmara Dağıtım – İletişim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <nav class="nav" aria-label="Ana gezinme">
+        <div class="logo" role="img" aria-label="Marmara Dağıtım">
+          <span class="logo-badge">MD</span><span>MARMARA DAĞITIM</span>
+        </div>
+        <a class="tab" href="index.html">Markalar</a>
+        <a class="tab" href="products.html">Ürünler</a>
+        <a class="tab" href="contact.html">İletişim</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="hero">
+      <div class="logo-badge">MD</div>
+      <h2 style="margin:4px 0 6px">MARMARA DAĞITIM</h2>
+      <p class="lead">Hızlı ve güvenilir hizmet anlayışıyla yanınızdayız. Bölgenizdeki temsilcilere buradan ulaşabilirsiniz.</p>
+    </div>
+    <div id="people" class="people"></div>
+  </main>
+
+  <footer><small>© <span id="y"></span> Marmara Dağıtım • GitHub Pages</small></footer>
+
+  <!-- aktif sekme -->
+  <script>
+    (function(){
+      const here = location.pathname.split('/').pop() || 'contact.html';
+      document.querySelectorAll('.tab').forEach(t=>{
+        const isHere = (t.getAttribute('href')||'') === here;
+        t.setAttribute('aria-current', isHere?'page':'false');
+      });
+    })();
+  </script>
+
+  <!-- JSON’dan kişiler -->
+  <script>
+    const $ = s => document.querySelector(s);
+    async function loadJSON(p){ const r=await fetch(p,{cache:'no-store'}); if(!r.ok) throw new Error(p); return r.json(); }
+    (async function init(){
+      try{
+        const people = await loadJSON('data/people.json');
+        const wrap = $('#people'); wrap.innerHTML='';
+        people.forEach(p=>{
+          const row = document.createElement('div'); row.className='person';
+          row.innerHTML = `
+            <img class="avatar" src="${p.img}" alt="${p.name}" onerror="this.src='https://dummyimage.com/88x88/0b0d12/ffffff&text='+encodeURIComponent('${(p.name||'M').slice(0,1)}')">
+            <div><h5>${p.name}</h5><small>${p.title||''}</small></div>
+            <a class="btn" href="tel:${(p.phone||'').replace(/\\s|\\(/g,'')}">Ara</a>`;
+          wrap.appendChild(row);
+        });
+        document.getElementById('y').textContent=new Date().getFullYear();
+      }catch(e){ console.error(e); alert('Kişiler yüklenemedi.'); }
+    })();
+  </script>
+</body>
+</html>

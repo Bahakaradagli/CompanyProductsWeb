@@ -109,27 +109,29 @@ body{
 /* =========================================================
    ================  PRODUCT MODAL STYLES  =================
    ========================================================= */
+
+/* Backdrop: üst–alt boşluklu, ortalı */
 .modal-backdrop{
   position:fixed; inset:0;
   background:rgba(0,0,0,.55);
   opacity:0; pointer-events:none;
-  display:grid; place-items:center;
+  display:flex; justify-content:center; align-items:center;
+  padding:40px 16px;               /* ÜST–ALT boşluk */
   transition:opacity .18s ease;
   z-index:1000;
-  padding:40px 14px; /* üst-alt boşluk */
 }
 .modal-backdrop.active{ opacity:1; pointer-events:auto; }
 
+/* Modal kutusu: ekranı taşırma, içerik scroll */
 .modal{
-  width:min(640px, calc(100% - 28px));
+  width:min(640px, calc(100% - 32px));
   background:var(--panel);
   border:1px solid var(--cardBorder);
   border-radius:16px;
   box-shadow:0 20px 60px rgba(0,0,0,.45);
+  display:flex; flex-direction:column;
+  max-height:calc(100dvh - 120px);  /* üst–alt boşluk payı */
   overflow:hidden;
-  max-height:calc(100dvh - 120px); /* ekranı taşmasın */
-  overflow:auto;
-  overscroll-behavior:contain;
   transform:translateY(6px) scale(.98);
   transition:transform .18s ease;
 }
@@ -138,28 +140,31 @@ body{
 /* Header */
 .modal-header{
   display:flex; align-items:center; justify-content:space-between;
-  padding:12px 14px; border-bottom:1px solid var(--line);
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
   background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
 }
 .modal-title{
-  margin:0; font-size:17px; font-weight:800; letter-spacing:.02em; color:#F4F6FF;
+  margin:0; font-size:18px; font-weight:800; letter-spacing:.02em; color:#F4F6FF;
 }
 .modal-close{
-  appearance:none; border:0; outline:0; cursor:pointer;
+  background:rgba(255,255,255,.08);
+  border:0; outline:0; cursor:pointer;
   width:32px; height:32px; border-radius:10px;
   display:grid; place-items:center;
-  background:rgba(255,255,255,.08); color:#cfd3de;
-  font-size:16px; line-height:1;
+  color:#cfd3de; font-size:16px; line-height:1;
   transition:background .15s ease, transform .1s ease;
 }
 .modal-close:hover{ background:rgba(255,255,255,.12); }
 .modal-close:active{ transform:scale(.96); }
 
-/* Body */
+/* Body: esneyen alan, içerik taşarsa kaydır */
 .modal-body{
-  display:grid; gap:14px;
-  grid-template-columns:220px 1fr; /* görsel kolon küçültüldü */
-  padding:14px 16px;
+  flex:1;
+  display:grid; gap:16px;
+  grid-template-columns:220px 1fr;   /* görsel kolonu küçültüldü */
+  padding:16px;
+  overflow:auto;
 }
 .modal-body img{
   max-width:220px;
@@ -180,27 +185,37 @@ body{
   color:#EDEEF1; font-size:14px; font-weight:700; word-break:break-word;
 }
 
-/* Actions */
+/* Actions: altta, ortada, geniş kapat butonu */
 .modal-actions{
-  display:flex; justify-content:flex-end; gap:8px;
-  padding:10px 14px; border-top:1px solid var(--line);
+  padding:16px; border-top:1px solid var(--line);
   background:rgba(255,255,255,.03);
+  display:flex; justify-content:center;
 }
 .btn{
-  appearance:none; border:1px solid var(--cardBorder); background:var(--card);
-  color:#EDEEF1; padding:8px 12px; border-radius:12px; font-weight:600; cursor:pointer;
+  flex:1; max-width:220px;            /* geniş ama çok taşmasın */
+  text-align:center;
+  background:var(--card);
+  border:1px solid var(--cardBorder);
+  border-radius:12px;
+  color:#EDEEF1;
+  font-weight:600;
+  padding:12px 0;
+  cursor:pointer;
   transition:background .15s ease, border-color .15s ease, transform .1s ease;
 }
 .btn:hover{ background:var(--cardHover); border-color:rgba(255,255,255,.14); }
 .btn:active{ transform:translateY(1px); }
 
-/* Modal – Mobil */
+/* ========= Mobil ========= */
 @media (max-width:640px){
   .modal-backdrop{ padding:24px 10px; }
   .modal{
     width:min(520px, 100%);
     max-height:calc(100dvh - 72px);
   }
-  .modal-body{ grid-template-columns:1fr; }
+  .modal-title{ font-size:17px; }
+  .modal-body{ grid-template-columns:1fr; padding:14px 16px; gap:14px; }
   .modal-body img{ max-width:75%; margin:0 auto; }
+  .modal-actions{ padding:12px 14px; }
+  .btn{ max-width:100%; }            /* mobilde tam genişlik */
 }

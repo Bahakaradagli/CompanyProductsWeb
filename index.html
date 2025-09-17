@@ -3,36 +3,41 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ – Ürünler</title>
+  <title>VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ – Markalar</title>
 
   <!-- fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- ortak stiller -->
+  <!-- ortak stiller (varsa) -->
   <link rel="stylesheet" href="common.css">
-  <link rel="stylesheet" href="index.css">
   <!-- bu sayfanın stilleri -->
-  <link rel="stylesheet" href="products.css">
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <!-- ==== DESKTOP NAV ==== -->
+  <!-- ==== DESKTOP NAV (KORUNDU) ==== -->
   <header class="desknav" role="banner" style="--accent:#54577D">
     <div class="desknav__wrap">
       <div class="desknav__inner">
+        <!-- Sol: Logo + Başlık -->
         <div class="desknav__brand">
-          <img class="desknav__logo" src="assets/logo-150.png" alt="VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ Logo" onerror="this.style.display='none'">
+          <img class="desknav__logo"
+               src="assets/logo-150.png"
+               alt="VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ Logo"
+               onerror="this.style.display='none'">
           <span class="desknav__title">VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ DAĞITIM</span>
         </div>
+
+        <!-- Sağ: Sekmeler + Giriş/Ürün Ekle (aynı görünüm) -->
         <nav class="desknav__tabs" aria-label="Ana gezinme">
-          <a class="desknav__tab" href="index.html">
+          <a class="desknav__tab" href="index.html" aria-current="page">
             <span class="desknav__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 4h14m-15 0a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </span>
             <span>Markalar</span>
           </a>
-          <a class="desknav__tab" href="products.html" aria-current="page">
+          <a class="desknav__tab" href="products.html">
             <span class="desknav__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M4 7h7v7H4V7Zm9 0h7v7h-7V7ZM8 17h8v3H8v-3Z" fill="currentColor"/></svg>
             </span>
@@ -40,10 +45,25 @@
           </a>
           <a class="desknav__tab" href="contact.html">
             <span class="desknav__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z"
+              fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </span>
             <span>İletişim</span>
           </a>
+
+          <!-- EK: Ürün Ekle & Giriş butonları (sekme stiliyle) -->
+          <button id="addBtn" class="desknav__tab desknav__tab--action" style="display:none">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </span>
+            <span>Ürün Ekle</span>
+          </button>
+          <button id="loginBtn" class="desknav__tab desknav__tab--ghost">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span>Giriş</span>
+          </button>
         </nav>
       </div>
     </div>
@@ -51,157 +71,251 @@
 
   <!-- ==== SAYFA İÇERİĞİ ==== -->
   <main class="container">
-    <!-- üst bar: başlık + arama -->
-    <div class="toolbar">
-      <h2 id="pageTitle" class="page-title">Ürünler</h2>
-      <label class="search">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <input id="q" type="search" placeholder="Ara" autocomplete="off" />
-      </label>
-    </div>
-
-    <!-- gruplar burada -->
-    <div id="groups" class="groups" aria-live="polite"></div>
+    <h2 class="page-title">Markalar</h2>
+    <div id="brands" class="brands" aria-live="polite"></div>
   </main>
 
   <footer>
     <small>© <span id="y"></span> VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ • GitHub Pages</small>
   </footer>
 
-  <!-- Yardımcılar (UI aynı) -->
+  <!-- ===== MODALLAR ===== -->
+  <!-- Giriş Modal -->
+  <dialog id="loginModal" class="modal">
+    <form method="dialog" class="modal__card" id="loginForm">
+      <h3 class="modal__title">Giriş Yap</h3>
+      <div class="grid2">
+        <div class="form__row">
+          <label>Kullanıcı adı</label>
+          <input type="text" name="user" placeholder="admin" required />
+        </div>
+        <div class="form__row">
+          <label>Şifre</label>
+          <input type="password" name="pass" placeholder="••••••••" required />
+        </div>
+      </div>
+      <p class="form__hint">Demo: <code>admin</code> / <code>veliogluGlobal34</code></p>
+      <p class="form__error" id="loginError" hidden>Hatalı kullanıcı adı veya şifre.</p>
+      <div class="modal__actions">
+        <button class="btn" value="cancel" type="button" id="loginCancel">İptal</button>
+        <button class="btn btn--primary" type="submit">Giriş</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Ürün Ekle Modal -->
+  <dialog id="productModal" class="modal">
+    <form method="dialog" class="modal__card" id="productForm">
+      <h3 class="modal__title">Ürün Ekle</h3>
+
+      <div class="grid2">
+        <div class="form__row">
+          <label>Ürün Adı</label>
+          <input type="text" name="name" required />
+        </div>
+        <div class="form__row">
+          <label>Marka</label>
+          <input type="text" name="brand" placeholder="Doğuş" />
+        </div>
+        <div class="form__row">
+          <label>Katalog (slug)</label>
+          <input type="text" name="catalog" placeholder="dogus" required />
+        </div>
+        <div class="form__row">
+          <label>Kategori</label>
+          <input type="text" name="category" placeholder="Dökme Çay" />
+        </div>
+        <div class="form__row">
+          <label>Paket</label>
+          <input type="text" name="package" placeholder="500 g" />
+        </div>
+        <div class="form__row">
+          <label>Koli Adedi</label>
+          <input type="number" name="case_qty" placeholder="12" min="0" />
+        </div>
+        <div class="form__row grid2__span">
+          <label>Görsel URL</label>
+          <input type="url" name="img" placeholder="https://.../urun.png" />
+        </div>
+      </div>
+
+      <p class="form__error" id="productError" hidden>Kaydedilemedi. Lütfen tekrar deneyin.</p>
+      <p class="form__success" id="productOk" hidden>Kaydedildi!</p>
+
+      <div class="modal__actions">
+        <button class="btn" value="cancel" type="button" id="productCancel">Vazgeç</button>
+        <button class="btn btn--primary" type="submit">Kaydet</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== SCRIPTS ===== -->
   <script>
-    // aktif sekme emniyet
+    // Aktif sekme emniyet
     (function(){
-      const here = (location.pathname.split('/').pop() || 'products.html');
-      document.querySelectorAll('.desknav__tab').forEach(t=>{
-        const isHere = (t.getAttribute('href')||'') === here || (here==='' && t.getAttribute('href')==='products.html');
-        t.setAttribute('aria-current', isHere?'page':'false');
+      const here = (location.pathname.split('/').pop() || 'index.html');
+      document.querySelectorAll('.desknav__tab[href]').forEach(t=>{
+        const isHere = (t.getAttribute('href')||'') === here || (here==='' && t.getAttribute('href')==='index.html');
+        t.setAttribute('aria-current', isHere ? 'page' : 'false');
       });
     })();
-
-    const $  = (s, r=document) => r.querySelector(s);
-    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
-
-    async function loadJSON(url){
-      const res = await fetch(url, {cache:'no-store'});
-      if(!res.ok) throw new Error(url);
-      return res.json();
-    }
-    function makeCard(p){
-      const a = document.createElement('a');
-      a.className = 'product-card';
-      a.href = '#';
-      a.innerHTML = `
-        <div class="thumb">
-          <img src="${p.img || ''}" alt="${p.name}">
-        </div>
-        <div class="title" title="${p.name}">${(p.name||'').toUpperCase()}</div>`;
-      const img = a.querySelector('img');
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = 'https://dummyimage.com/600x600/ffffff/111111&text=' + encodeURIComponent((p.name||'U')[0]);
-      };
-      return a;
-    }
-    function makeGroup(label, items){
-      const sec = document.createElement('section');
-      sec.className = 'group';
-      sec.innerHTML = `<h3 class="group-title">${label}</h3><div class="grid"></div>`;
-      const grid = sec.querySelector('.grid');
-      items.forEach(p => grid.appendChild(makeCard(p)));
-      return sec;
-    }
-    function applyFilter(query){
-      const q = query.trim().toLowerCase();
-      $$('.group').forEach(g=>{
-        let any = false;
-        $$('.product-card', g).forEach(card=>{
-          const t = card.querySelector('.title').textContent.toLowerCase();
-          const ok = !q || t.includes(q);
-          card.style.display = ok ? '' : 'none';
-          if(ok) any = true;
-        });
-        g.style.display = any ? '' : 'none';
-      });
-    }
   </script>
 
-  <!-- Firebase: ürünleri RTDB'den çek -->
+  <!-- Firebase + Markalar RTDB'den + Giriş/Ürün Ekle -->
   <script type="module">
-    // === Firebase config — kendi değerlerinle doldur (sende zaten var) ===
+    // ==== Firebase config (seninki) ====
     const firebaseConfig = {
-  apiKey: "AIzaSyAKZslnECwA0wwMAhfHarE3wMLXoq7TV1k",
-  authDomain: "veliogluglobal-86631.firebaseapp.com",
-  databaseURL: "https://veliogluglobal-86631-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "veliogluglobal-86631",
-  storageBucket: "veliogluglobal-86631.appspot.com",
-  messagingSenderId: "643623290439",
-  appId: "1:643623290439:web:a61c004610ceb9e1105362",
-  measurementId: "G-D0WT8BV4C5"
-};
+      apiKey: "AIzaSyAKZslnECwA0wwMAhfHarE3wMLXoq7TV1k",
+      authDomain: "veliogluglobal-86631.firebaseapp.com",
+      databaseURL: "https://veliogluglobal-86631-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "veliogluglobal-86631",
+      storageBucket: "veliogluglobal-86631.appspot.com",
+      messagingSenderId: "643623290439",
+      appId: "1:643623290439:web:a61c004610ceb9e1105362",
+      measurementId: "G-D0WT8BV4C5"
+    };
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import {
+      getDatabase, ref, push, set, serverTimestamp, get, child
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+    // Başlat
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
 
-    // RTDB'den /products düğümünü oku → diziye çevir
-    async function fetchProductsFromRTDB(){
+    // ==== DEMO Auth (client-side) ====
+    const LOGIN_USER = "admin";
+    const LOGIN_PASS = "veliogluGlobal34";
+    const isAuthed   = () => localStorage.getItem("isAdmin") === "1";
+    const setAuthed  = (v) => (v ? localStorage.setItem("isAdmin","1") : localStorage.removeItem("isAdmin"));
+
+    const loginBtn   = document.getElementById("loginBtn");
+    const addBtn     = document.getElementById("addBtn");
+    const loginDlg   = document.getElementById("loginModal");
+    const productDlg = document.getElementById("productModal");
+    const loginForm  = document.getElementById("loginForm");
+    const productForm= document.getElementById("productForm");
+
+    function refreshAuthUI(){
+      if(isAuthed()){
+        addBtn.style.display = "";
+        loginBtn.querySelector("span:last-child").textContent = "Çıkış";
+        loginBtn.classList.remove("desknav__tab--ghost");
+      }else{
+        addBtn.style.display = "none";
+        loginBtn.querySelector("span:last-child").textContent = "Giriş";
+        loginBtn.classList.add("desknav__tab--ghost");
+      }
+    }
+    refreshAuthUI();
+
+    // Login / Logout
+    loginBtn.addEventListener("click", ()=>{
+      if(isAuthed()){ setAuthed(false); refreshAuthUI(); return; }
+      loginDlg.showModal();
+    });
+    document.getElementById("loginCancel").addEventListener("click", ()=> loginDlg.close());
+    loginForm.addEventListener("submit", (e)=>{
+      e.preventDefault();
+      const fd = new FormData(loginForm);
+      const u = (fd.get("user")||"").trim();
+      const p = (fd.get("pass")||"").trim();
+      const err = document.getElementById("loginError");
+      if(u === LOGIN_USER && p === LOGIN_PASS){
+        setAuthed(true);
+        err.hidden = true;
+        loginDlg.close();
+        refreshAuthUI();
+      }else{
+        err.hidden = false;
+      }
+    });
+
+    // Ürün Ekle
+    addBtn.addEventListener("click", ()=> productDlg.showModal());
+    document.getElementById("productCancel").addEventListener("click", ()=> productDlg.close());
+    productForm.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      if(!isAuthed()){ alert("Önce giriş yapın."); return; }
+      const fd = new FormData(productForm);
+      const product = {
+        name: (fd.get("name")||"").trim(),
+        brand: (fd.get("brand")||"").trim() || null,
+        catalog: (fd.get("catalog")||"").trim(),
+        category: (fd.get("category")||"").trim() || null,
+        package: (fd.get("package")||"").trim() || null,
+        case_qty: fd.get("case_qty") ? Number(fd.get("case_qty")) : null,
+        img: (fd.get("img")||"").trim() || null,
+        created_at: serverTimestamp()
+      };
+      const okEl = document.getElementById("productOk");
+      const errEl= document.getElementById("productError");
+      okEl.hidden = true; errEl.hidden = true;
+
+      try{
+        const newRef = push(ref(db, "products"));
+        await set(newRef, product);
+        okEl.hidden = false;
+        productForm.reset();
+        setTimeout(()=>{ productDlg.close(); okEl.hidden = true; }, 700);
+        // Kaydettikten sonra markaları tazele
+        renderBrandsFromRTDB();
+      }catch(err){
+        console.error(err);
+        errEl.hidden = false;
+      }
+    });
+
+    // ==== Markaları RTDB'den çıkar & çiz ====
+    async function renderBrandsFromRTDB(){
+      const wrap = document.getElementById('brands');
+      wrap.innerHTML = '';
+
       const snap = await get(child(ref(db), "products"));
-      if(!snap.exists()) return [];
-      const data = snap.val(); // {autoId: productObj, ...}
-      return Object.entries(data).map(([id, p]) => ({
-        id,
-        name: p.name || "",
-        catalog: p.catalog || "",
-        img: p.img || null,
-        brand: p.brand || null,
-        category: p.category || null,
-        package: p.package || null,
-        case_qty: p.case_qty ?? null
-      }));
+      if(!snap.exists()){
+        wrap.innerHTML = '<div style="color:#A8AFBD">Henüz ürün yok.</div>';
+        return;
+      }
+      const data = snap.val(); // {autoId: product,...}
+
+      // brand → {count, img(any)}
+      const map = new Map();
+      for (const p of Object.values(data)){
+        const brand = (p.brand || '').trim();
+        if(!brand) continue;
+        if(!map.has(brand)) map.set(brand, {count:0, img:null});
+        const rec = map.get(brand);
+        rec.count++;
+        if(!rec.img && p.img) rec.img = p.img;
+      }
+
+      // sıralama: alfabetik (TR duyarlı)
+      const items = [...map.entries()].sort((a,b)=> a[0].localeCompare(b[0], 'tr'));
+
+      for(const [brand, info] of items){
+        const a = document.createElement('a');
+        a.href = 'products.html#brand=' + encodeURIComponent(brand);
+        a.className = 'brand';
+        a.innerHTML = `
+          <img src="${info.img || ''}" alt="${brand} logosu">
+          <div class="brand__text">
+            <h4>${brand}</h4>
+            <small>${info.count} ürün</small>
+          </div>`;
+        const img = a.querySelector('img');
+        img.onerror = () => {
+          img.onerror = null;
+          img.src = 'https://dummyimage.com/88x88/0b0d12/ffffff&text=' + encodeURIComponent((brand||'M')[0]);
+        };
+        wrap.appendChild(a);
+      }
+
+      document.getElementById("y").textContent = new Date().getFullYear();
     }
 
-    (async function init(){
-      try{
-        // Markalar yerelden (ad/sıra için)
-        const brands   = await (await fetch('data/brands.json', {cache:'no-store'})).json();
-        const products = await fetchProductsFromRTDB();
-
-        // katalog → görünen ad
-        const nameOf = Object.fromEntries(brands.map(b => [b.id, b.name]));
-        const hash = (location.hash||'').slice(1);
-
-        // gruplandır
-        const groupsMap = new Map();
-        products.forEach(p=>{
-          if(hash && p.catalog !== hash) return;
-          const key = p.catalog || 'diğer';
-          if(!groupsMap.has(key)) groupsMap.set(key, []);
-          groupsMap.get(key).push(p);
-        });
-
-        // sırayı markalar.json’a göre kur
-        const order = brands.map(b=>b.id).concat(
-          [...groupsMap.keys()].filter(k => !brands.some(b=>b.id===k))
-        );
-
-        const wrap = document.getElementById('groups'); wrap.innerHTML = '';
-        order.forEach(cat=>{
-          const items = groupsMap.get(cat);
-          if(!items || !items.length) return;
-          const label = (nameOf[cat] || cat || '').toString().toUpperCase();
-          wrap.appendChild(makeGroup(label, items));
-        });
-
-        document.getElementById('q').addEventListener('input', (e)=> applyFilter(e.target.value));
-        document.getElementById('y').textContent = new Date().getFullYear();
-      }catch(e){
-        console.error(e);
-        alert('Ürünler yüklenemedi.');
-      }
-    })();
+    // ilk çizim
+    renderBrandsFromRTDB();
   </script>
 </body>
 </html>

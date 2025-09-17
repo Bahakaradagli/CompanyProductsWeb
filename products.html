@@ -68,6 +68,7 @@
     <small>© <span id="y"></span> VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ • GitHub Pages</small>
   </footer>
 
+  <!-- Yardımcılar (UI aynı) -->
   <script>
     // aktif sekme emniyet
     (function(){
@@ -78,7 +79,7 @@
       });
     })();
 
-    const $ = (s, r=document) => r.querySelector(s);
+    const $  = (s, r=document) => r.querySelector(s);
     const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
     async function loadJSON(url){
@@ -86,18 +87,15 @@
       if(!res.ok) throw new Error(url);
       return res.json();
     }
-
     function makeCard(p){
       const a = document.createElement('a');
       a.className = 'product-card';
       a.href = '#';
       a.innerHTML = `
         <div class="thumb">
-          <img src="${p.img}" alt="${p.name}">
+          <img src="${p.img || ''}" alt="${p.name}">
         </div>
-        <div class="title" title="${p.name}">${p.name.toUpperCase()}</div>
-      `;
-      // fallback
+        <div class="title" title="${p.name}">${(p.name||'').toUpperCase()}</div>`;
       const img = a.querySelector('img');
       img.onerror = () => {
         img.onerror = null;
@@ -105,7 +103,6 @@
       };
       return a;
     }
-
     function makeGroup(label, items){
       const sec = document.createElement('section');
       sec.className = 'group';
@@ -114,7 +111,6 @@
       items.forEach(p => grid.appendChild(makeCard(p)));
       return sec;
     }
-
     function applyFilter(query){
       const q = query.trim().toLowerCase();
       $$('.group').forEach(g=>{
@@ -128,34 +124,70 @@
         g.style.display = any ? '' : 'none';
       });
     }
+  </script>
+
+  <!-- Firebase: ürünleri RTDB'den çek -->
+  <script type="module">
+    // === Firebase config — kendi değerlerinle doldur (sende zaten var) ===
+    const firebaseConfig = {
+  apiKey: "AIzaSyAKZslnECwA0wwMAhfHarE3wMLXoq7TV1k",
+  authDomain: "veliogluglobal-86631.firebaseapp.com",
+  databaseURL: "https://veliogluglobal-86631-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "veliogluglobal-86631",
+  storageBucket: "veliogluglobal-86631.appspot.com",
+  messagingSenderId: "643623290439",
+  appId: "1:643623290439:web:a61c004610ceb9e1105362",
+  measurementId: "G-D0WT8BV4C5"
+};
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    // RTDB'den /products düğümünü oku → diziye çevir
+    async function fetchProductsFromRTDB(){
+      const snap = await get(child(ref(db), "products"));
+      if(!snap.exists()) return [];
+      const data = snap.val(); // {autoId: productObj, ...}
+      return Object.entries(data).map(([id, p]) => ({
+        id,
+        name: p.name || "",
+        catalog: p.catalog || "",
+        img: p.img || null,
+        brand: p.brand || null,
+        category: p.category || null,
+        package: p.package || null,
+        case_qty: p.case_qty ?? null
+      }));
+    }
 
     (async function init(){
       try{
-        const [brands, products] = await Promise.all([
-          loadJSON('data/brands.json'),
-          loadJSON('data/products.json')
-        ]);
+        // Markalar yerelden (ad/sıra için)
+        const brands   = await (await fetch('data/brands.json', {cache:'no-store'})).json();
+        const products = await fetchProductsFromRTDB();
 
-        // katalog → görünen ad eşlemesi
+        // katalog → görünen ad
         const nameOf = Object.fromEntries(brands.map(b => [b.id, b.name]));
-        // URL hash ile tek katalogu odaklamak istersek
         const hash = (location.hash||'').slice(1);
 
         // gruplandır
         const groupsMap = new Map();
         products.forEach(p=>{
-          if(hash && p.catalog !== hash) return; // filtre
-          const key = p.catalog;
+          if(hash && p.catalog !== hash) return;
+          const key = p.catalog || 'diğer';
           if(!groupsMap.has(key)) groupsMap.set(key, []);
           groupsMap.get(key).push(p);
         });
 
-        // sırayı markalar.json’daki sıraya göre kur; kalanlar sona
+        // sırayı markalar.json’a göre kur
         const order = brands.map(b=>b.id).concat(
           [...groupsMap.keys()].filter(k => !brands.some(b=>b.id===k))
         );
 
-        const wrap = $('#groups'); wrap.innerHTML = '';
+        const wrap = document.getElementById('groups'); wrap.innerHTML = '';
         order.forEach(cat=>{
           const items = groupsMap.get(cat);
           if(!items || !items.length) return;
@@ -163,9 +195,8 @@
           wrap.appendChild(makeGroup(label, items));
         });
 
-        // arama
-        $('#q').addEventListener('input', (e)=> applyFilter(e.target.value));
-        $('#y').textContent = new Date().getFullYear();
+        document.getElementById('q').addEventListener('input', (e)=> applyFilter(e.target.value));
+        document.getElementById('y').textContent = new Date().getFullYear();
       }catch(e){
         console.error(e);
         alert('Ürünler yüklenemedi.');

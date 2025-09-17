@@ -68,7 +68,35 @@
     <small>© <span id="y"></span> VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ • GitHub Pages</small>
   </footer>
 
-  <!-- Yardımcılar (UI aynı) -->
+  <!-- ==== ÜRÜN MODAL ==== -->
+  <div id="pmBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+      <div class="modal-header">
+        <h3 id="pmTitle" class="modal-title"></h3>
+        <button id="pmClose" class="modal-close" aria-label="Kapat">✕</button>
+      </div>
+      <div class="modal-body">
+        <img id="pmImg" alt="">
+        <div class="kv">
+          <span>Marka</span><b id="pmBrand">-</b>
+        </div>
+        <div class="kv">
+          <span>Kategori</span><b id="pmCategory">-</b>
+        </div>
+        <div class="kv">
+          <span>Paket</span><b id="pmPackage">-</b>
+        </div>
+        <div class="kv">
+          <span>Koli adedi</span><b id="pmCase">-</b>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="pmClose2">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== JS ====== -->
   <script>
     // aktif sekme emniyet
     (function(){
@@ -82,11 +110,39 @@
     const $  = (s, r=document) => r.querySelector(s);
     const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
-    async function loadJSON(url){
-      const res = await fetch(url, {cache:'no-store'});
-      if(!res.ok) throw new Error(url);
-      return res.json();
+    // ---- Modal helpers ----
+    const pmBackdrop = $('#pmBackdrop');
+    const pmClose    = $('#pmClose');
+    const pmClose2   = $('#pmClose2');
+
+    function openModal(p){
+      $('#pmTitle').textContent = p.name || '';
+      $('#pmBrand').textContent = p.brand || '-';
+      $('#pmCategory').textContent = p.category || '-';
+      $('#pmPackage').textContent = p.package || '-';
+      $('#pmCase').textContent = (p.case_qty ?? '-') + (p.case_qty ? ' adet' : '');
+      const img = $('#pmImg');
+      img.src = p.img || '';
+      img.alt = p.name || '';
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = 'https://dummyimage.com/1200x1200/ffffff/111111&text=' + encodeURIComponent((p.name||'U')[0]);
+      };
+      pmBackdrop.classList.add('active');
+      pmBackdrop.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
     }
+    function closeModal(){
+      pmBackdrop.classList.remove('active');
+      pmBackdrop.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    }
+    pmClose.addEventListener('click', closeModal);
+    pmClose2.addEventListener('click', closeModal);
+    pmBackdrop.addEventListener('click', (e)=>{ if(e.target===pmBackdrop) closeModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    // ---- UI helpers ----
     function makeCard(p){
       const a = document.createElement('a');
       a.className = 'product-card';
@@ -101,6 +157,7 @@
         img.onerror = null;
         img.src = 'https://dummyimage.com/600x600/ffffff/111111&text=' + encodeURIComponent((p.name||'U')[0]);
       };
+      a.addEventListener('click', (ev)=>{ ev.preventDefault(); openModal(p); });
       return a;
     }
     function makeGroup(label, items){
@@ -128,17 +185,16 @@
 
   <!-- Firebase: ürünleri RTDB'den çek -->
   <script type="module">
-    // === Firebase config — kendi değerlerinle doldur (sende zaten var) ===
     const firebaseConfig = {
-  apiKey: "AIzaSyAKZslnECwA0wwMAhfHarE3wMLXoq7TV1k",
-  authDomain: "veliogluglobal-86631.firebaseapp.com",
-  databaseURL: "https://veliogluglobal-86631-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "veliogluglobal-86631",
-  storageBucket: "veliogluglobal-86631.appspot.com",
-  messagingSenderId: "643623290439",
-  appId: "1:643623290439:web:a61c004610ceb9e1105362",
-  measurementId: "G-D0WT8BV4C5"
-};
+      apiKey: "AIzaSyAKZslnECwA0wwMAhfHarE3wMLXoq7TV1k",
+      authDomain: "veliogluglobal-86631.firebaseapp.com",
+      databaseURL: "https://veliogluglobal-86631-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "veliogluglobal-86631",
+      storageBucket: "veliogluglobal-86631.appspot.com",
+      messagingSenderId: "643623290439",
+      appId: "1:643623290439:web:a61c004610ceb9e1105362",
+      measurementId: "G-D0WT8BV4C5"
+    };
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -146,11 +202,10 @@
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
 
-    // RTDB'den /products düğümünü oku → diziye çevir
     async function fetchProductsFromRTDB(){
       const snap = await get(child(ref(db), "products"));
       if(!snap.exists()) return [];
-      const data = snap.val(); // {autoId: productObj, ...}
+      const data = snap.val();
       return Object.entries(data).map(([id, p]) => ({
         id,
         name: p.name || "",
@@ -165,33 +220,32 @@
 
     (async function init(){
       try{
-        // Markalar yerelden (ad/sıra için)
-        const brands   = await (await fetch('data/brands.json', {cache:'no-store'})).json();
+        // (İstersen brands.json kaldırılabilir; katalog adı için ürünlerdeki catalog kullanılıyor.)
         const products = await fetchProductsFromRTDB();
 
-        // katalog → görünen ad
-        const nameOf = Object.fromEntries(brands.map(b => [b.id, b.name]));
+        // hash ile filtre: #brand=... veya #catalog=...
         const hash = (location.hash||'').slice(1);
+        const params = new URLSearchParams(hash.replace(/^[?#]/,''));
+        const brandFilter   = params.get('brand');
+        const catalogFilter = params.get('catalog');
 
-        // gruplandır
+        // gruplandır (catalog’a göre)
         const groupsMap = new Map();
         products.forEach(p=>{
-          if(hash && p.catalog !== hash) return;
-          const key = p.catalog || 'diğer';
+          if(brandFilter && (p.brand||'').toLowerCase() !== brandFilter.toLowerCase()) return;
+          if(catalogFilter && p.catalog !== catalogFilter) return;
+          const key = p.catalog || 'Diğer';
           if(!groupsMap.has(key)) groupsMap.set(key, []);
           groupsMap.get(key).push(p);
         });
 
-        // sırayı markalar.json’a göre kur
-        const order = brands.map(b=>b.id).concat(
-          [...groupsMap.keys()].filter(k => !brands.some(b=>b.id===k))
-        );
-
-        const wrap = document.getElementById('groups'); wrap.innerHTML = '';
+        const wrap = document.getElementById('groups'); 
+        wrap.innerHTML = '';
+        const order = [...groupsMap.keys()].sort((a,b)=>a.localeCompare(b,'tr'));
         order.forEach(cat=>{
           const items = groupsMap.get(cat);
           if(!items || !items.length) return;
-          const label = (nameOf[cat] || cat || '').toString().toUpperCase();
+          const label = (cat || '').toString().toUpperCase();
           wrap.appendChild(makeGroup(label, items));
         });
 

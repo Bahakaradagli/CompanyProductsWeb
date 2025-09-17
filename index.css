@@ -5,13 +5,23 @@
   --text:#e5e7eb;
   --muted:#A8AFBD;
   --line:rgba(255,255,255,.10);
-  --hover:rgba(255,255,255,.05);
-  --primary:#6b74a8;
-  --primary-strong:#7e88c5;
-}
-body{ background:#0f1115; color:#e5e7eb; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; margin:0; }
+  --hover:rgba(255,255,255,.07);
 
-/* container genişliği (common.css ile uyumlu) */
+  --tab-bg: rgba(255,255,255,.12);
+  --tab-bg-hover: rgba(255,255,255,.18);
+  --tab-border: rgba(255,255,255,.12);
+  --tab-active-bg:#fff;
+  --tab-active-color:#1f2937;
+
+  --modal-bg:#151821;
+  --modal-border: rgba(255,255,255,.12);
+  --input-bg:#0f1115;
+  --input-border:#2a2f3a;
+  --focus:#8a94d9;
+}
+body{ background:var(--bg); color:var(--text); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; margin:0; }
+
+/* container */
 .container{ max-width:1100px; margin:0 auto; padding:0 16px; }
 
 /* ==== DESKTOP NAV (KORUNDU) ==== */
@@ -25,35 +35,28 @@ body{ background:#0f1115; color:#e5e7eb; font-family:Inter,system-ui,-apple-syst
 .desknav__brand{ display:flex; align-items:center; gap:12px; min-width:0; }
 .desknav__logo{ width:40px; height:40px; border-radius:12px; object-fit:cover; background:#0A0A0A; display:block; box-shadow: 0 0 0 1px rgba(255,255,255,.15) inset; }
 .desknav__title{ font-weight:700; letter-spacing:.2px; white-space:nowrap; color:#fff; }
+
+/* sekmeler + action butonları aynı görünüm */
 .desknav__tabs{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
 .desknav__tab{
   display:inline-flex; align-items:center; gap:8px;
   padding:10px 12px; border-radius:10px; text-decoration:none;
-  color:#fff; font-weight:600; line-height:1;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.12);
-  transition: background .15s ease, transform .1s ease;
+  color:#fff; font-weight:700; line-height:1;
+  background: var(--tab-bg);
+  border: 1px solid var(--tab-border);
+  transition: background .15s ease, transform .1s ease, color .15s ease;
+  cursor:pointer;
 }
-.desknav__tab:hover{ background: rgba(255,255,255,.18); transform: translateY(-1px); }
-.desknav__tab[aria-current="page"]{ background:#ffffff; color:#1f2937; }
+.desknav__tab:hover{ background: var(--tab-bg-hover); transform: translateY(-1px); }
+.desknav__tab[aria-current="page"]{ background:var(--tab-active-bg); color:var(--tab-active-color); }
+.desknav__tab--ghost{ background: rgba(255,255,255,.08); }
+.desknav__tab--action:not([aria-current]){ background: rgba(255,255,255,.16); }
+
 .desknav__icon{ width:20px; height:20px; display:grid; place-items:center; flex:0 0 auto; }
 .desknav__icon svg{ width:20px; height:20px; }
 
-/* Header butonları */
-.desknav__btn{
-  appearance:none; border:1px solid rgba(255,255,255,.25);
-  background:#fff; color:#1f2937; font-weight:700;
-  padding:10px 12px; border-radius:10px; cursor:pointer;
-}
-.desknav__btn--ghost{
-  background:rgba(255,255,255,.08); color:#fff; border-color:rgba(255,255,255,.18);
-}
-.desknav__btn:hover{ transform: translateY(-1px); }
-
 /* mobil */
-@media (max-width: 520px){
-  .desknav__title{ display:none; } /* sadece logo kalsın */
-}
+@media (max-width:520px){ .desknav__title{ display:none; } }
 
 /* ==== SAYFA BAŞLIĞI ==== */
 .page-title{
@@ -64,10 +67,10 @@ body{ background:#0f1115; color:#e5e7eb; font-family:Inter,system-ui,-apple-syst
 
 /* ==== MARKALAR GRID ==== */
 .brands{
-  display: grid;
-  grid-template-columns: repeat( auto-fill, minmax(220px, 1fr) );
-  gap: 14px;
-  margin-bottom: 24px;
+  display:grid;
+  grid-template-columns:repeat( auto-fill, minmax(220px, 1fr) );
+  gap:14px;
+  margin-bottom:24px;
 }
 a.brand{
   display:flex; align-items:center; gap:12px;
@@ -78,72 +81,86 @@ a.brand{
   padding: 10px 12px;
   transition: transform .1s ease, background .15s ease, border-color .15s ease;
 }
-a.brand:hover{
-  transform: translateY(-1px);
-  background: rgba(255,255,255,.09);
-  border-color: rgba(255,255,255,.12);
-}
+a.brand:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.12); }
 a.brand img{
   width:56px; height:56px; object-fit:contain;
   background:#0b0d12; border-radius:10px;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
 }
 .brand__text{ display:flex; flex-direction:column; }
-.brand__text h4{
-  margin:0; font-size:15px; font-weight:700; letter-spacing:.2px; color:#F1F4FB;
-}
+.brand__text h4{ margin:0; font-size:15px; font-weight:700; letter-spacing:.2px; color:#F1F4FB; }
 .brand__text small{ margin-top:2px; color:#A8AFBD; letter-spacing:.2px; }
 
 /* mobil için sıkıştırma */
-@media (max-width: 480px){
-  .brands{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  a.brand{ padding: 8px 10px; }
+@media (max-width:480px){
+  .brands{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; }
+  a.brand{ padding:8px 10px; }
   a.brand img{ width:48px; height:48px; border-radius:8px; }
   .brand__text h4{ font-size:14px; }
 }
 
-/* ======= Modallar ======= */
-.modal{
-  border:0; padding:0; background: transparent;
-}
-.modal::backdrop{
-  background: rgba(0,0,0,.6);
-}
+/* ======= Modal tasarımı ======= */
+.modal{ border:0; padding:0; background: transparent; }
+.modal::backdrop{ backdrop-filter: blur(2px); background: rgba(0,0,0,.55); }
+
 .modal__card{
   width:min(720px, 92vw);
-  background:#14161b; color:#e5e7eb;
+  background: var(--modal-bg);
+  color: var(--text);
+  border:1px solid var(--modal-border);
+  border-radius:16px;
+  padding:18px 16px 14px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.55);
+  animation: pop .16s ease-out;
+  position: relative;
+}
+@keyframes pop{ from{ transform: scale(.98); opacity:.0 } to{ transform: scale(1); opacity:1 } }
+
+.modal__x{
+  position:absolute; top:10px; right:10px;
+  width:32px; height:32px; border-radius:8px;
   border:1px solid rgba(255,255,255,.12);
-  border-radius:16px; padding:16px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  background: rgba(255,255,255,.06);
+  color:#fff; cursor:pointer; font-size:16px; line-height:1;
 }
+.modal__x:hover{ background: rgba(255,255,255,.12); }
+
 .modal__title{
-  margin:4px 0 12px; font-size:18px; font-weight:800; letter-spacing:.02em;
+  margin:4px 6px 14px; font-size:18px; font-weight:800; letter-spacing:.02em;
 }
-.form__row{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
+
+.form__row{ display:flex; flex-direction:column; gap:6px; }
+.form__row + .form__row{ margin-top:10px; }
 .form__row label{ font-size:12px; color:#cbd2e1; }
 .form__row input{
-  background:#0f1115; color:#e9edf7; border:1px solid rgba(255,255,255,.14);
-  border-radius:10px; padding:10px 12px; outline:0;
+  background: var(--input-bg);
+  color:#e9edf7;
+  border:1px solid var(--input-border);
+  border-radius:10px;
+  padding:10px 12px; outline:0;
 }
-.form__row input:focus{ border-color:#8a94d9; box-shadow: 0 0 0 3px rgba(138,148,217,.25); }
-.form__hint{ font-size:12px; color:#9aa3b5; }
-.form__error{ color:#ff7a7a; font-size:13px; margin:6px 0 0; }
-.form__success{ color:#77e29b; font-size:13px; margin:6px 0 0; }
+.form__row input:focus{ border-color: var(--focus); box-shadow: 0 0 0 3px rgba(138,148,217,.25); }
 
-.modal__actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:6px; }
+.form__hint{ font-size:12px; color:#9aa3b5; margin:10px 6px 0; }
+.form__error{ color:#ff7a7a; font-size:13px; margin:10px 6px 0; }
+.form__success{ color:#77e29b; font-size:13px; margin:10px 6px 0; }
+
+.modal__actions{
+  display:flex; gap:8px; justify-content:flex-end;
+  margin-top:14px;
+}
 .btn{
   appearance:none; border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.08); color:#fff;
+  background:rgba(255,255,255,.10); color:#fff;
   padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:700;
+  transition: filter .12s ease, background .12s ease;
 }
-.btn:hover{ background:rgba(255,255,255,.12); }
-.btn--primary{ background: var(--primary-strong); border-color: transparent; color:#fff; }
+.btn:hover{ background: rgba(255,255,255,.16); }
+.btn--primary{ background:#7e88c5; border-color: transparent; }
 .btn--primary:hover{ filter: brightness(1.05); }
 
 /* Ürün formu düzeni */
-.grid2{
-  display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px;
-}
+.grid2{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; margin: 0 6px; }
 .grid2__span{ grid-column: 1 / -1; }
 @media (max-width:720px){
   .grid2{ grid-template-columns: 1fr; }

@@ -29,7 +29,7 @@
           <span class="desknav__title">VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ DAĞITIM</span>
         </div>
 
-        <!-- Sağ: Sekmeler + Giriş/Ürün Ekle -->
+        <!-- Sağ: Sekmeler + Giriş/Ürün Ekle (aynı görünüm) -->
         <nav class="desknav__tabs" aria-label="Ana gezinme">
           <a class="desknav__tab" href="index.html" aria-current="page">
             <span class="desknav__icon" aria-hidden="true">
@@ -51,9 +51,19 @@
             <span>İletişim</span>
           </a>
 
-          <!-- EK: Giriş & Ürün Ekle -->
-          <button id="addBtn" class="desknav__btn" style="display:none">Ürün Ekle</button>
-          <button id="loginBtn" class="desknav__btn desknav__btn--ghost">Giriş</button>
+          <!-- EK: Ürün Ekle & Giriş butonları (sekme stiliyle) -->
+          <button id="addBtn" class="desknav__tab desknav__tab--action" style="display:none">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </span>
+            <span>Ürün Ekle</span>
+          </button>
+          <button id="loginBtn" class="desknav__tab desknav__tab--ghost">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span>Giriş</span>
+          </button>
         </nav>
       </div>
     </div>
@@ -73,27 +83,31 @@
   <!-- Giriş Modal -->
   <dialog id="loginModal" class="modal">
     <form method="dialog" class="modal__card" id="loginForm">
-      <h3 class="modal__title">Giriş yap</h3>
-      <div class="form__row">
-        <label>Kullanıcı adı</label>
-        <input type="text" name="user" placeholder="admin" required />
+      <button type="button" class="modal__x" aria-label="Kapat">✕</button>
+      <h3 class="modal__title">Giriş Yap</h3>
+      <div class="grid2">
+        <div class="form__row">
+          <label>Kullanıcı adı</label>
+          <input type="text" name="user" placeholder="admin" required />
+        </div>
+        <div class="form__row">
+          <label>Şifre</label>
+          <input type="password" name="pass" placeholder="••••••••" required />
+        </div>
       </div>
-      <div class="form__row">
-        <label>Şifre</label>
-        <input type="password" name="pass" placeholder="••••••••" required />
-      </div>
+      <p class="form__hint">Demo: <code>admin</code> / <code>veliogluGlobal34</code></p>
+      <p class="form__error" id="loginError" hidden>Hatalı kullanıcı adı veya şifre.</p>
       <div class="modal__actions">
         <button class="btn" value="cancel" type="button" id="loginCancel">İptal</button>
         <button class="btn btn--primary" type="submit">Giriş</button>
       </div>
-      <p class="form__hint">Demo: <code>admin</code> / <code>veliogluGlobal34</code></p>
-      <p class="form__error" id="loginError" hidden>Hatalı kullanıcı adı veya şifre.</p>
     </form>
   </dialog>
 
   <!-- Ürün Ekle Modal -->
   <dialog id="productModal" class="modal">
     <form method="dialog" class="modal__card" id="productForm">
+      <button type="button" class="modal__x" aria-label="Kapat">✕</button>
       <h3 class="modal__title">Ürün Ekle</h3>
 
       <div class="grid2">
@@ -127,13 +141,13 @@
         </div>
       </div>
 
+      <p class="form__error" id="productError" hidden>Kaydedilemedi. Lütfen tekrar deneyin.</p>
+      <p class="form__success" id="productOk" hidden>Kaydedildi!</p>
+
       <div class="modal__actions">
         <button class="btn" value="cancel" type="button" id="productCancel">Vazgeç</button>
         <button class="btn btn--primary" type="submit">Kaydet</button>
       </div>
-
-      <p class="form__error" id="productError" hidden>Kaydedilemedi. Lütfen tekrar deneyin.</p>
-      <p class="form__success" id="productOk" hidden>Kaydedildi!</p>
     </form>
   </dialog>
 
@@ -142,7 +156,7 @@
   <script>
     (function(){
       const here = (location.pathname.split('/').pop() || 'index.html');
-      document.querySelectorAll('.desknav__tab').forEach(t=>{
+      document.querySelectorAll('.desknav__tab[href]').forEach(t=>{
         const isHere = (t.getAttribute('href')||'') === here || (here==='' && t.getAttribute('href')==='index.html');
         t.setAttribute('aria-current', isHere ? 'page' : 'false');
       });
@@ -152,7 +166,6 @@
   <!-- JSON'dan Markalar -->
   <script>
     const $ = (s, r=document) => r.querySelector(s);
-
     async function loadJSON(url){
       const res = await fetch(url, { cache: 'no-store' });
       if(!res.ok) throw new Error(url + ' yüklenemedi');
@@ -184,29 +197,32 @@
     })();
   </script>
 
-  <!-- Giriş & Ürün Ekle davranışı + Firebase (modüler SDK) -->
+  <!-- Giriş & Ürün Ekle + Firebase Realtime Database -->
   <script type="module">
     // ==== Firebase ayarları ====
-    // 1) Aşağıyı kendi projen ile doldur:
-    //    https://console.firebase.google.com → Project settings → SDK setup
+    // Kendi projenin config’ini gir:
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+  apiKey: "AIzaSyAKZslnECwA0wwMAhfHarE3wMLXoq7TV1k",
+  authDomain: "veliogluglobal-86631.firebaseapp.com",
+  databaseURL: "https://veliogluglobal-86631-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "veliogluglobal-86631",
+  storageBucket: "veliogluglobal-86631.appspot.com",
+  messagingSenderId: "643623290439",
+  appId: "1:643623290439:web:a61c004610ceb9e1105362",
+  measurementId: "G-D0WT8BV4C5"
+};
 
-    // 2) SDK importları
+    // SDK importları (RTDB)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getDatabase, ref, push, set, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // 3) Başlat
+    // Başlat
     const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
+    const db  = getDatabase(app);
 
-    // ==== Login state (demo) ====
+    // Demo login state
     const LOGIN_USER = "admin";
     const LOGIN_PASS = "veliogluGlobal34";
     const isAuthed   = () => localStorage.getItem("isAdmin") === "1";
@@ -222,12 +238,12 @@
     function refreshAuthUI(){
       if(isAuthed()){
         addBtn.style.display = "";
-        loginBtn.textContent = "Çıkış";
-        loginBtn.classList.remove("desknav__btn--ghost");
+        loginBtn.querySelector("span:last-child").textContent = "Çıkış";
+        loginBtn.classList.remove("desknav__tab--ghost");
       }else{
         addBtn.style.display = "none";
-        loginBtn.textContent = "Giriş";
-        loginBtn.classList.add("desknav__btn--ghost");
+        loginBtn.querySelector("span:last-child").textContent = "Giriş";
+        loginBtn.classList.add("desknav__tab--ghost");
       }
     }
     refreshAuthUI();
@@ -238,6 +254,7 @@
       loginDlg.showModal();
     });
     document.getElementById("loginCancel").addEventListener("click", ()=> loginDlg.close());
+    loginDlg.querySelector(".modal__x").addEventListener("click", ()=> loginDlg.close());
 
     loginForm.addEventListener("submit", (e)=>{
       e.preventDefault();
@@ -258,6 +275,7 @@
     // Ürün Ekle
     addBtn.addEventListener("click", ()=> productDlg.showModal());
     document.getElementById("productCancel").addEventListener("click", ()=> productDlg.close());
+    productDlg.querySelector(".modal__x").addEventListener("click", ()=> productDlg.close());
 
     productForm.addEventListener("submit", async (e)=>{
       e.preventDefault();
@@ -265,7 +283,6 @@
 
       const fd = new FormData(productForm);
       const product = {
-        // Firestore'da id'yi otomatik oluşturacağız (addDoc)
         name: (fd.get("name")||"").trim(),
         brand: (fd.get("brand")||"").trim() || null,
         catalog: (fd.get("catalog")||"").trim(),
@@ -281,21 +298,21 @@
       okEl.hidden = true; errEl.hidden = true;
 
       try{
-        await addDoc(collection(db, "products"), product);
+        // RTDB → /products/<autoId>
+        const newRef = push(ref(db, "products"));
+        await set(newRef, product);
+
         okEl.hidden = false;
         productForm.reset();
-        // modalı kısa gecikmeyle kapat
-        setTimeout(()=>{ productDlg.close(); okEl.hidden = true; }, 600);
+        setTimeout(()=>{ productDlg.close(); okEl.hidden = true; }, 700);
       }catch(err){
         console.error(err);
         errEl.hidden = false;
       }
     });
 
-    // === NOT: Demo setini içeri almak istersen ===
-    // aşağıdaki JSON’u (verdiğin Doğuş ürünleri) bir kerelik yüklemek için
-    // aynı formüle göre tek tek ekleyebilirsin ya da ayrı bir "toplu yükleme"
-    // modali ekleyebiliriz. İstersen onu da ekleyeyim.
+    // Footer yıl
+    document.getElementById("y").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>

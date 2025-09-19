@@ -36,8 +36,14 @@ body{
   background: var(--desknav-accent);
   box-shadow: 0 1px 0 rgba(255,255,255,.15) inset;
 }
-.desknav__wrap{ max-width:1100px; margin:0 auto; padding:0 16px; }
-.desknav__inner{ display:flex; align-items:center; justify-content:space-between; height:64px; gap:12px; }
+
+/* NAV genişliği artırıldı: 1100px -> 1400px  */
+.desknav__wrap{ max-width:1400px; margin:0 auto; padding:0 16px; }
+
+.desknav__inner{
+  display:flex; align-items:center; justify-content:space-between;
+  height:64px; gap:12px;
+}
 .desknav__brand{ display:flex; align-items:center; gap:12px; min-width:0; }
 .desknav__logo{ width:40px; height:40px; border-radius:12px; object-fit:cover; background:#0A0A0A; display:block; box-shadow: 0 0 0 1px rgba(255,255,255,.15) inset; }
 .desknav__title{ font-weight:700; letter-spacing:.2px; white-space:nowrap; color:#fff; }
@@ -45,8 +51,8 @@ body{
 /* sekmeler + action butonları görünümü */
 .desknav__tabs{
   display:flex; gap:8px; align-items:center;
-  flex-wrap:nowrap;                    /* taşmayı önle */
-  overflow-x:auto;                     /* yatay scroll */
+  flex-wrap:nowrap;                 /* tek satır tut */
+  overflow-x:auto;                  /* gerekirse yatay scroll */
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
 }
@@ -89,7 +95,7 @@ body{
   .desknav__tab--action{ padding:8px; }
 }
 
-/* Çok dar ekran: sekmeler de ikon-öncelikli (isteğe bağlı) */
+/* Çok dar ekran: sekmeler de ikon-öncelikli (opsiyonel) */
 @media (max-width: 420px){
   .desknav__tab:not(.desknav__tab--ghost) span:last-child{ display:none; }
   .desknav__tab{ padding:8px; }
@@ -245,3 +251,8 @@ a.brand img{
 .status-ok{ color:#77e29b; }
 .status-err{ color:#ff7a7a; }
 .scroll-x{ overflow-x:auto; }
+
+/* ======= (Opsiyonel) Full-bleed nav için yardımcı sınıf =======
+   Nav'ı ekranın tamamına yaymak istersen HTML'de <header class="desknav nav-full"> yap ve bunu aç:
+.nav-full .desknav__wrap{ max-width:none; padding:0 24px; }
+*/

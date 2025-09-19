@@ -42,8 +42,17 @@ body{
 .desknav__logo{ width:40px; height:40px; border-radius:12px; object-fit:cover; background:#0A0A0A; display:block; box-shadow: 0 0 0 1px rgba(255,255,255,.15) inset; }
 .desknav__title{ font-weight:700; letter-spacing:.2px; white-space:nowrap; color:#fff; }
 
-/* sekmeler + action butonları aynı görünüm */
-.desknav__tabs{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+/* sekmeler + action butonları görünümü */
+.desknav__tabs{
+  display:flex; gap:8px; align-items:center;
+  flex-wrap:nowrap;                    /* taşmayı önle */
+  overflow-x:auto;                     /* yatay scroll */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.desknav__tabs::-webkit-scrollbar{ height:6px; }
+.desknav__tabs::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.2); border-radius:6px; }
+
 .desknav__tab{
   display:inline-flex; align-items:center; gap:8px;
   padding:10px 12px; border-radius:10px; text-decoration:none;
@@ -63,6 +72,29 @@ body{
 
 /* mobil */
 @media (max-width:520px){ .desknav__title{ display:none; } }
+
+/* ======= Compact aksiyon butonları (login sonrası) ======= */
+.compact-actions .desknav__tab--action{
+  padding:6px 8px;
+  font-size:12px;
+  border-radius:8px;
+}
+.compact-actions .desknav__tab--action .desknav__icon{ width:18px; height:18px; }
+.compact-actions .desknav__tab--action svg{ width:18px; height:18px; }
+.compact-actions .desknav__tabs{ gap:6px; }
+
+/* Dar ekran: aksiyon butonları ikon-öncelikli */
+@media (max-width: 900px){
+  .desknav__tab--action span:last-child{ display:none; }
+  .desknav__tab--action{ padding:8px; }
+}
+
+/* Çok dar ekran: sekmeler de ikon-öncelikli (isteğe bağlı) */
+@media (max-width: 420px){
+  .desknav__tab:not(.desknav__tab--ghost) span:last-child{ display:none; }
+  .desknav__tab{ padding:8px; }
+  .desknav__tab[aria-current="page"]{ color:#fff; background: var(--tab-bg); }
+}
 
 /* ======= SAYFA BAŞLIĞI ======= */
 .page-title{

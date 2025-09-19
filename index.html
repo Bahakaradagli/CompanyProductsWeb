@@ -251,8 +251,10 @@
     })();
   </script>
 
-  <!-- YENİ (önerilen) -->
+  <!-- SheetJS (Excel/CSV okumak için) -->
+  <!-- SRI olmadan güvenli yükleme; SRI uyuşmazlığı script'i engelleyebiliyor -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <!-- Firebase + Markalar RTDB'den + Giriş/Ürün Ekle/Sil + Toplu Ekle -->
   <script type="module">
     // ==== Firebase config ====
@@ -300,12 +302,18 @@
         manageBtn.style.display = "";
         loginBtn.querySelector("span:last-child").textContent = "Çıkış";
         loginBtn.classList.remove("desknav__tab--ghost");
+
+        // COMPACT NAV: login sonrası alanı küçült
+        document.body.classList.add('compact-actions');
       }else{
         addBtn.style.display = "none";
         bulkBtn.style.display = "none";
         manageBtn.style.display = "none";
         loginBtn.querySelector("span:last-child").textContent = "Giriş";
         loginBtn.classList.add("desknav__tab--ghost");
+
+        // COMPACT NAV: çıkışta geri al
+        document.body.classList.remove('compact-actions');
       }
     }
     refreshAuthUI();
@@ -563,10 +571,20 @@
       const f = bulkFile.files?.[0];
       if(!f){ resetBulkUI(); return; }
       try{
+        // XLSX hazır mı kontrol (koruma)
+        if (typeof XLSX === 'undefined') {
+          resetBulkUI();
+          bulkErr.hidden = false;
+          bulkErr.textContent = 'Excel kütüphanesi (XLSX) yüklenemedi. İnternet erişimini ve script etiketini kontrol edin.';
+          return;
+        }
+
         const data = await f.arrayBuffer();
         let rows = [];
         if(f.name.toLowerCase().endsWith('.csv')){
-          const wb = XLSX.read(new Uint8Array(data), {type:'array'});
+          // CSV'yi metin olarak oku (ayırıcı otomatik algılanır)
+          const text = new TextDecoder('utf-8').decode(new Uint8Array(data));
+          const wb = XLSX.read(text, {type:'string'});
           const ws = wb.Sheets[wb.SheetNames[0]];
           rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true});
         }else{
@@ -579,6 +597,19 @@
         // Başlıklar
         originalHeaders = (rows.shift() || []).map(h => String(h||'').trim());
         const normKeys = originalHeaders.map(h => normalizeHeader(h));
+
+        // Minimum gerekli başlıklar kontrolü
+        const required = ['name','catalog'];
+        const present = new Set(normKeys);
+        const missing = required.filter(k => !present.has(k));
+        if (missing.length){
+          resetBulkUI();
+          bulkErr.hidden = false;
+          bulkErr.textContent = 'Eksik başlık(lar): ' + missing.join(', ') + '. İlk satırın başlık olduğundan emin olun.';
+          return;
+        }
+
+        // Önizleme başlık çiz
         bulkHead.innerHTML = originalHeaders.map(h=>`<th>${escapeHtml(h||'')}</th>`).join('');
 
         // Satırları normalize et

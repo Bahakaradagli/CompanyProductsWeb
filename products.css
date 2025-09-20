@@ -110,27 +110,27 @@ body{
    ================  PRODUCT MODAL STYLES  =================
    ========================================================= */
 
-/* Backdrop: üst–alt boşluklu, ortalı */
+/* Backdrop */
 .modal-backdrop{
   position:fixed; inset:0;
   background:rgba(0,0,0,.55);
   opacity:0; pointer-events:none;
   display:flex; justify-content:center; align-items:center;
-  padding:40px 16px;               /* ÜST–ALT boşluk */
+  padding:40px 16px;
   transition:opacity .18s ease;
   z-index:1000;
 }
 .modal-backdrop.active{ opacity:1; pointer-events:auto; }
 
-/* Modal kutusu: ekranı taşırma, içerik scroll */
+/* Modal kutusu */
 .modal{
-  width:min(640px, calc(100% - 32px));
+  width:min(860px, calc(100% - 32px));
   background:var(--panel);
   border:1px solid var(--cardBorder);
   border-radius:16px;
   box-shadow:0 20px 60px rgba(0,0,0,.45);
   display:flex; flex-direction:column;
-  max-height:calc(100dvh - 120px);  /* üst–alt boşluk payı */
+  max-height:calc(100dvh - 120px);
   overflow:hidden;
   transform:translateY(6px) scale(.98);
   transition:transform .18s ease;
@@ -158,41 +158,73 @@ body{
 .modal-close:hover{ background:rgba(255,255,255,.12); }
 .modal-close:active{ transform:scale(.96); }
 
-/* Body: esneyen alan, içerik taşarsa kaydır */
+/* Body: sol-sağ */
 .modal-body{
   flex:1;
-  display:grid; gap:16px;
-  grid-template-columns:220px 1fr;   /* görsel kolonu küçültüldü */
+  display:grid;
+  grid-template-columns: 420px 1fr;  /* Sol: görsel+etiketler | Sağ: özellikler */
+  gap:20px;
   padding:16px;
   overflow:auto;
 }
-.modal-body img{
-  max-width:220px;
-  aspect-ratio:1 / 1;
-  object-fit:contain;
+
+/* Sol: görsel + altında etiketler */
+.modal-left{ display:flex; flex-direction:column; gap:12px; }
+.figure{
   background:var(--white);
-  border-radius:12px; border:1px solid var(--cardBorder);
+  border:1px solid var(--cardBorder);
+  border-radius:14px;
+  display:grid; place-items:center;
+  padding:10px;
+}
+.figure img{
+  width:100%; max-width:100%;
+  aspect-ratio:1 / 1; object-fit:contain;
+}
+.under-title{
+  display:flex; flex-wrap:wrap; gap:8px;
+}
+.chip{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 10px; border-radius:999px;
+  font-size:12.5px; font-weight:700; letter-spacing:.02em;
+  color:#e9ecf7;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--cardBorder);
 }
 
-/* Key–Value grid */
+/* Sağ: özellikler */
+.modal-right{
+  min-width:0;
+  background:linear-gradient(180deg, rgba(255,255,255,.02), transparent);
+  border:1px solid var(--cardBorder);
+  border-radius:14px;
+  padding:14px;
+}
+.sec-title{
+  margin:2px 0 8px;
+  font-size:14px; font-weight:800; letter-spacing:.08em; color:#f4f6ff;
+  text-transform:uppercase;
+  opacity:.9;
+}
+
+/* Key–Value satırları (sağ blokta) */
 .kv{
-  display:grid; grid-template-columns:120px 1fr; gap:8px;
+  display:grid; grid-template-columns:140px 1fr; gap:10px;
   padding:10px 0; border-bottom:1px dashed var(--line);
 }
 .kv:last-of-type{ border-bottom:0; }
 .kv span{ color:var(--muted); font-size:13px; letter-spacing:.02em; }
-.kv b{
-  color:#EDEEF1; font-size:14px; font-weight:700; word-break:break-word;
-}
+.kv b{ color:#EDEEF1; font-size:14px; font-weight:700; word-break:break-word; }
 
-/* Actions: altta, ortada, geniş kapat butonu */
+/* Actions */
 .modal-actions{
   padding:16px; border-top:1px solid var(--line);
   background:rgba(255,255,255,.03);
   display:flex; justify-content:center;
 }
 .btn{
-  flex:1; max-width:220px;            /* geniş ama çok taşmasın */
+  flex:1; max-width:220px;
   text-align:center;
   background:var(--card);
   border:1px solid var(--cardBorder);
@@ -206,16 +238,16 @@ body{
 .btn:hover{ background:var(--cardHover); border-color:rgba(255,255,255,.14); }
 .btn:active{ transform:translateY(1px); }
 
-/* ========= Mobil ========= */
-@media (max-width:640px){
-  .modal-backdrop{ padding:24px 10px; }
-  .modal{
-    width:min(520px, 100%);
-    max-height:calc(100dvh - 72px);
+/* ========= Mobil / küçük ekran ========= */
+@media (max-width: 720px){
+  .modal{ width:min(560px, 100%); max-height:calc(100dvh - 72px); }
+  .modal-body{
+    grid-template-columns: 1fr;      /* Tek sütuna düşür */
+    gap:14px;
   }
-  .modal-title{ font-size:17px; }
-  .modal-body{ grid-template-columns:1fr; padding:14px 16px; gap:14px; }
-  .modal-body img{ max-width:75%; margin:0 auto; }
+  .figure{ padding:8px; }
+  .sec-title{ margin-top:0; }
+  .kv{ grid-template-columns:120px 1fr; }
   .modal-actions{ padding:12px 14px; }
-  .btn{ max-width:100%; }            /* mobilde tam genişlik */
+  .btn{ max-width:100%; }
 }

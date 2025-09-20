@@ -15,13 +15,11 @@
   <!-- bu sayfanın stilleri -->
   <link rel="stylesheet" href="index.css">
 
-  <!-- Basit notif bar stili -->
+  <!-- Basit notif bar + avatar stili -->
   <style>
     .notifbar {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       display: none;
       padding: 10px 14px;
       color: #fff;
@@ -29,10 +27,20 @@
       font-weight: 600;
       text-align: center;
     }
-    .notifbar--info { background: #3b82f6; }   /* mavi */
-    .notifbar--ok { background: #22c55e; }     /* yeşil */
-    .notifbar--err { background: #ef4444; }    /* kırmızı */
-    body.__pushdown { padding-top: 44px; }     /* bar açıkken içerik zıplamasın diye */
+    .notifbar--info { background: #3b82f6; }
+    .notifbar--ok   { background: #22c55e; }
+    .notifbar--err  { background: #ef4444; }
+    body.__pushdown { padding-top: 44px; }
+
+    /* Marka avatarı: ilk harf */
+    .brand__avatar{
+      width: 72px; height: 72px; border-radius: 12px;
+      background:#0b0d12; color:#fff; display:grid; place-items:center;
+      font-weight:700; font-size:28px; flex-shrink:0; user-select:none;
+    }
+    @media (max-width: 560px){
+      .brand__avatar{ width: 56px; height:56px; font-size:22px; }
+    }
   </style>
 </head>
 <body>
@@ -106,20 +114,20 @@
   <!-- ===== MODALLAR ===== -->
   <!-- Giriş Modal -->
   <dialog id="loginModal" class="modal">
-    <form method="dialog" class="modal__card" id="loginForm">
+    <form method="dialog" class="modal__card" id="loginForm" autocomplete="off">
       <button class="modal__x" type="button" id="loginCancel">✕</button>
       <h3 class="modal__title">Giriş Yap</h3>
       <div class="grid2">
         <div class="form__row">
           <label>Kullanıcı adı</label>
-          <input type="text" name="user" placeholder="admin" required />
+          <input type="text" name="user" placeholder="kullanıcı adı" required autocomplete="username" />
         </div>
         <div class="form__row">
           <label>Şifre</label>
-          <input type="password" name="pass" placeholder="••••••••" required />
+          <input type="password" name="pass" placeholder="••••••••" required autocomplete="current-password" />
         </div>
       </div>
-      <p class="form__hint">Demo: <code>admin</code> / <code>veliogluGlobal34</code></p>
+      <!-- Demo ipucu KALDIRILDI -->
       <p class="form__error" id="loginError" hidden>Hatalı kullanıcı adı veya şifre.</p>
       <div class="modal__actions">
         <button class="btn" value="cancel" type="button" id="loginCancel2">İptal</button>
@@ -249,7 +257,7 @@
         <button class="btn btn--primary" id="bulkImport" disabled>İçe Aktar</button>
       </div>
       <p class="form__success" id="bulkOk" hidden>Toplu ekleme tamamlandı.</p>
-      <p class="form__error" id="bulkErr" hidden>Toplu ekleme sırasında hata oluştu.</p>
+      <p class="form__error" id="bulkErr" hidden>Toplu ekeleme sırasında hata oluştu.</p>
     </div>
   </dialog>
 
@@ -290,7 +298,7 @@
       authDomain: "veliogluglobal-86631.firebaseapp.com",
       databaseURL: "https://veliogluglobal-86631-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "veliogluglobal-86631",
-      storageBucket: "veliogluglobal-86631.firebasestorage.app", // ✅ DÜZELTİLDİ
+      storageBucket: "veliogluglobal-86631.firebasestorage.app",
       messagingSenderId: "643623290439",
       appId: "1:643623290439:web:a61c004610ceb9e1105362",
       measurementId: "G-D0WT8BV4C5"
@@ -306,7 +314,6 @@
     // Başlat
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
-    // ✅ Bucket'ı explicit veriyoruz
     const storage = getStorage(app, "gs://veliogluglobal-86631.firebasestorage.app");
 
     // ==== DEMO Auth (client-side) ====
@@ -387,7 +394,6 @@
       okEl.hidden = true; errEl.hidden = true;
 
       try{
-        // Görsel zorunlu
         if(!(file && file instanceof File && file.size > 0)){
           throw new Error("Lütfen bir görsel seçin.");
         }
@@ -404,10 +410,10 @@
           created_at: serverTimestamp()
         };
 
-        const cat = (raw.catalog || slugify(raw.name || "urun")).toLowerCase();
+        const cat  = (raw.catalog || slugify(raw.name || "urun")).toLowerCase();
         const base = slugify(`${raw.name || "urun"}`) || "urun";
-        const ext0  = file.type?.split("/")[1] || "jpg";
-        const ext   = ext0.toLowerCase()==="jpeg" ? "jpg" : ext0.toLowerCase();
+        const ext0 = file.type?.split("/")[1] || "jpg";
+        const ext  = ext0.toLowerCase()==="jpeg" ? "jpg" : ext0.toLowerCase();
         const key  = `products/${cat}/${base}-${Date.now()}.${ext}`;
 
         const storageRef = sRef(storage, key);
@@ -449,35 +455,35 @@
       }
       const data = snap.val(); // {autoId: product,...}
 
-      // brand → {count, img(any)}
-      const map = new Map();
+      // brand normalization → tekil eşleme
+      // key: UPPER(TR) + tek boşluklu trim; displayName: ilk görünen asıl yazım
+      const brandMap = new Map(); // key -> { displayName, count }
       for (const p of Object.values(data)){
-        const brand = (p.brand || '').trim();
-        if(!brand) continue;
-        if(!map.has(brand)) map.set(brand, {count:0, img:null});
-        const rec = map.get(brand);
-        rec.count++;
-        if(!rec.img && p.img) rec.img = p.img;
+        const rawBrand = (p.brand || '').trim();
+        if(!rawBrand) continue;
+        const displayName = collapseSpaces(rawBrand);
+        const key = displayName.toLocaleUpperCase('tr-TR');
+        if(!brandMap.has(key)){
+          brandMap.set(key, { displayName, count: 0 });
+        }
+        brandMap.get(key).count++;
       }
 
       // sıralama: alfabetik (TR duyarlı)
-      const items = [...map.entries()].sort((a,b)=> a[0].localeCompare(b[0], 'tr'));
+      const items = [...brandMap.values()]
+        .sort((a,b)=> a.displayName.localeCompare(b.displayName, 'tr'));
 
-      for(const [brand, info] of items){
+      for(const {displayName, count} of items){
+        const initial = (displayName.trim()[0] || 'M').toLocaleUpperCase('tr-TR');
         const a = document.createElement('a');
-        a.href = 'products.html#brand=' + encodeURIComponent(brand);
+        a.href = 'products.html#brand=' + encodeURIComponent(displayName);
         a.className = 'brand';
         a.innerHTML = `
-          <img src="${info.img || ''}" alt="${brand} logosu">
+          <div class="brand__avatar" aria-hidden="true">${initial}</div>
           <div class="brand__text">
-            <h4>${brand}</h4>
-            <small>${info.count} ürün</small>
+            <h4>${escapeHtml(displayName)}</h4>
+            <small>${count} ürün</small>
           </div>`;
-        const img = a.querySelector('img');
-        img.onerror = () => {
-          img.onerror = null;
-          img.src = 'https://dummyimage.com/88x88/0b0d12/ffffff&text=' + encodeURIComponent((brand||'M')[0]);
-        };
         wrap.appendChild(a);
       }
 
@@ -538,6 +544,9 @@
     function escapeHtml(s){
       return String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
     }
+    function collapseSpaces(s){
+      return String(s||'').replace(/\s+/g,' ').trim();
+    }
 
     mSearch.addEventListener('input', renderManageTable);
 
@@ -552,7 +561,6 @@
       if(!ok) return;
       try{
         await remove(ref(db, `products/${id}`));
-        // onValue tetikler, tablo/markalar tazelenir
       }catch(err){
         console.error(err);
         alert('Silinirken bir hata oluştu.');

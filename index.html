@@ -290,7 +290,7 @@
       authDomain: "veliogluglobal-86631.firebaseapp.com",
       databaseURL: "https://veliogluglobal-86631-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "veliogluglobal-86631",
-      storageBucket: "veliogluglobal-86631.appspot.com",
+      storageBucket: "veliogluglobal-86631.firebasestorage.app", // ✅ DÜZELTİLDİ
       messagingSenderId: "643623290439",
       appId: "1:643623290439:web:a61c004610ceb9e1105362",
       measurementId: "G-D0WT8BV4C5"
@@ -306,7 +306,8 @@
     // Başlat
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
-    const storage = getStorage(app);
+    // ✅ Bucket'ı explicit veriyoruz
+    const storage = getStorage(app, "gs://veliogluglobal-86631.firebasestorage.app");
 
     // ==== DEMO Auth (client-side) ====
     const LOGIN_USER = "admin";
@@ -405,7 +406,8 @@
 
         const cat = (raw.catalog || slugify(raw.name || "urun")).toLowerCase();
         const base = slugify(`${raw.name || "urun"}`) || "urun";
-        const ext  = file.type?.split("/")[1] || "jpg";
+        const ext0  = file.type?.split("/")[1] || "jpg";
+        const ext   = ext0.toLowerCase()==="jpeg" ? "jpg" : ext0.toLowerCase();
         const key  = `products/${cat}/${base}-${Date.now()}.${ext}`;
 
         const storageRef = sRef(storage, key);
@@ -420,14 +422,16 @@
         const newRef = push(ref(db, "products"));
         await set(newRef, product);
 
-        hideNotif();                // başarıyla bitti → barı kapat
-        okEl.hidden = false;        // küçük başarı mesajını da bir an göster
+        okEl.hidden = false;
+        showNotif("Ürününüz eklendi ✅", "ok");
+        setTimeout(()=> hideNotif(), 1200);
+
         productForm.reset();
         setTimeout(()=>{ closeProduct(); okEl.hidden = true; }, 700);
       }catch(err){
         console.error(err);
-        showNotif("Yüklenemedi. Lütfen tekrar deneyin.", "err");  // hata → bar kırmızı
-        setTimeout(()=> hideNotif(), 3000);                       // 3 sn sonra kapat
+        showNotif("Yüklenemedi. Lütfen tekrar deneyin.", "err");
+        setTimeout(()=> hideNotif(), 3000);
         errEl.hidden = false;
       }
     });

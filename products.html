@@ -75,21 +75,36 @@
         <h3 id="pmTitle" class="modal-title"></h3>
         <button id="pmClose" class="modal-close" aria-label="Kapat">✕</button>
       </div>
+
+      <!-- YENİ DÜZEN: Sol (üstte görsel + altında etiketler), Sağ (Özellikler tablosu) -->
       <div class="modal-body">
-        <img id="pmImg" alt="">
-        <div class="kv">
-          <span>Marka</span><b id="pmBrand">-</b>
+        <div class="modal-left">
+          <div class="figure">
+            <img id="pmImg" alt="">
+          </div>
+          <div class="under-title">
+            <span class="chip" id="pmBrandUnder">-</span>
+            <span class="chip" id="pmCategoryUnder">-</span>
+          </div>
         </div>
-        <div class="kv">
-          <span>Kategori</span><b id="pmCategory">-</b>
-        </div>
-        <div class="kv">
-          <span>Paket</span><b id="pmPackage">-</b>
-        </div>
-        <div class="kv">
-          <span>Koli adedi</span><b id="pmCase">-</b>
+
+        <div class="modal-right">
+          <h4 class="sec-title">Özellikler</h4>
+          <div class="kv">
+            <span>Marka</span><b id="pmBrand">-</b>
+          </div>
+          <div class="kv">
+            <span>Kategori</span><b id="pmCategory">-</b>
+          </div>
+          <div class="kv">
+            <span>Paket</span><b id="pmPackage">-</b>
+          </div>
+          <div class="kv">
+            <span>Koli adedi</span><b id="pmCase">-</b>
+          </div>
         </div>
       </div>
+
       <div class="modal-actions">
         <button class="btn" id="pmClose2">Kapat</button>
       </div>
@@ -117,10 +132,8 @@
 
     function openModal(p){
       $('#pmTitle').textContent = p.name || '';
-      $('#pmBrand').textContent = p.brand || '-';
-      $('#pmCategory').textContent = p.category || '-';
-      $('#pmPackage').textContent = p.package || '-';
-      $('#pmCase').textContent = (p.case_qty ?? '-') + (p.case_qty ? ' adet' : '');
+
+      // Sol taraftaki görsel + alt etiketler
       const img = $('#pmImg');
       img.src = p.img || '';
       img.alt = p.name || '';
@@ -128,6 +141,15 @@
         img.onerror = null;
         img.src = 'https://dummyimage.com/1200x1200/ffffff/111111&text=' + encodeURIComponent((p.name||'U')[0]);
       };
+      $('#pmBrandUnder').textContent   = p.brand    ? p.brand    : '-';
+      $('#pmCategoryUnder').textContent= p.category ? p.category : '-';
+
+      // Sağ taraftaki özellikler
+      $('#pmBrand').textContent    = p.brand || '-';
+      $('#pmCategory').textContent = p.category || '-';
+      $('#pmPackage').textContent  = p.package || '-';
+      $('#pmCase').textContent     = p.case_qty ? (p.case_qty + ' adet') : '-';
+
       pmBackdrop.classList.add('active');
       pmBackdrop.setAttribute('aria-hidden','false');
       document.body.style.overflow = 'hidden';
@@ -220,7 +242,6 @@
 
     (async function init(){
       try{
-        // (İstersen brands.json kaldırılabilir; katalog adı için ürünlerdeki catalog kullanılıyor.)
         const products = await fetchProductsFromRTDB();
 
         // hash ile filtre: #brand=... veya #catalog=...

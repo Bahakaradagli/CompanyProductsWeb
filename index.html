@@ -153,7 +153,7 @@
     </form>
   </dialog>
 
-  <!-- Yönetim -->
+  <!-- Ürünleri Yönet -->
   <dialog id="manageModal" class="modal">
     <div class="modal__card" id="manageCard">
       <button class="modal__x" type="button" id="manageClose">✕</button>
@@ -187,7 +187,7 @@
     </div>
   </dialog>
 
-  <!-- Toplu Ekle -->
+  <!-- Toplu Ekle (Excel/CSV) -->
   <dialog id="bulkModal" class="modal">
     <div class="modal__card" id="bulkCard">
       <button class="modal__x" type="button" id="bulkClose">✕</button>
@@ -261,7 +261,7 @@
     };
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, push, set, serverTimestamp, onValue, remove }
+    import { getDatabase, ref, push, set, serverTimestamp, onValue, remove, get, child }
       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
     import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
@@ -328,7 +328,10 @@
     function closeProduct(){ productDlg.close(); }
     document.getElementById("productCancel").addEventListener("click", closeProduct);
     document.getElementById("productCancelX").addEventListener("click", closeProduct);
-    addBtn.addEventListener("click", ()=> productDlg.showModal());
+    addBtn.addEventListener("click", ()=>{
+      if(!isAuthed()){ alert("Önce giriş yapın."); return; }
+      productDlg.showModal();
+    });
 
     productForm.addEventListener("submit", async (e)=>{
       e.preventDefault();
@@ -386,7 +389,7 @@
       }
     });
 
-    // ==== TEK KAYNAKTAN RENDER: Sadece onValue ile ====
+    // ==== TEK KAYNAKTAN RENDER ====
     let _allProducts = [];
     onValue(ref(db, "products"), (snap)=>{
       const arr = [];
@@ -395,15 +398,14 @@
       }
       _allProducts = arr;
       renderManageTable(_allProducts);
-      renderBrands(_allProducts);   // << sadece burası render eder
+      renderBrands(_allProducts);
     });
 
-    // ==== Markaları ÇİZ (tekilleştirme + hard dedupe) ====
-    function renderBrands(products){
+    // ==== Markalar (tekilleştirme + hard dedupe) ====
+    async function renderBrands(products){
       const wrap = document.getElementById('brands');
 
-      // brandMap: key = normalizeBrandKey, val = {displayName,count}
-      const brandMap = new Map();
+      const brandMap = new Map(); // key = normalizeBrandKey, val = {displayName,count}
       for(const p of products){
         const rawBrand = (p.brand ?? '').trim();
         if(!rawBrand) continue;
@@ -414,12 +416,10 @@
         brandMap.get(key).count++;
       }
 
-      const items = [...brandMap.values()]
-        .sort((a,b)=> a.displayName.localeCompare(b.displayName, 'tr'));
-
-      // Fragment + replaceChildren ile güvenli temizleme
+      const items = [...brandMap.values()].sort((a,b)=> a.displayName.localeCompare(b.displayName, 'tr'));
       const frag = document.createDocumentFragment();
-      const seenHref = new Set(); // ek güvenlik: DOM’a duplicate düşmesin
+      const seenHref = new Set();
+
       for(const {displayName, count} of items){
         const initial = (displayName.trim()[0] || 'M').toLocaleUpperCase('tr-TR');
         const href = 'products.html#brand=' + encodeURIComponent(displayName);
@@ -440,8 +440,9 @@
 
       if(items.length===0){
         wrap.replaceChildren();
-        wrap.appendChild(document.createElement('div')).textContent = 'Henüz ürün yok.';
-        wrap.firstChild.style.color = '#A8AFBD';
+        const empty = document.createElement('div');
+        empty.textContent = 'Henüz ürün yok.'; empty.style.color = '#A8AFBD';
+        wrap.appendChild(empty);
       }else{
         wrap.replaceChildren(frag);
       }
@@ -481,6 +482,14 @@
     }
     mSearch.addEventListener('input', ()=> renderManageTable(_allProducts));
 
+    // Yönetim modalını aç/kapat
+    document.getElementById('manageBtn').addEventListener('click', ()=>{
+      if(!isAuthed()){ alert('Önce giriş yapın.'); return; }
+      renderManageTable(_allProducts);
+      manageDlg.showModal();
+    });
+    document.getElementById('manageClose').addEventListener('click', ()=> manageDlg.close());
+
     // Silme
     mTbody.addEventListener('click', async (e)=>{
       const btn = e.target.closest('button[data-del]');
@@ -491,6 +500,147 @@
       if(!confirm(`Bu ürünü silmek istediğinize emin misiniz?\nID: ${id}`)) return;
       try{ await remove(ref(db, `products/${id}`)); }
       catch(err){ console.error(err); alert('Silinirken bir hata oluştu.'); }
+    });
+
+    // ===== Toplu Ekle (Excel/CSV) =====
+    const bulkFile = document.getElementById('bulkFile');
+    const bulkStatus = document.getElementById('bulkStatus');
+    const bulkHead = document.getElementById('bulkHead');
+    const bulkBody = document.getElementById('bulkBody');
+    const bulkPreviewWrap = document.getElementById('bulkPreviewWrap');
+    const bulkImportBtn = document.getElementById('bulkImport');
+    const bulkErr = document.getElementById('bulkErr');
+    const bulkOk = document.getElementById('bulkOk');
+
+    let parsedRows = [];
+    let originalHeaders = [];
+
+    function resetBulkUI(){
+      bulkStatus.textContent = 'Dosya seçin…';
+      bulkPreviewWrap.style.display = 'none';
+      bulkHead.innerHTML = '';
+      bulkBody.innerHTML = '';
+      bulkImportBtn.disabled = true;
+      bulkErr.hidden = true;
+      bulkOk.hidden = true;
+      parsedRows = [];
+      originalHeaders = [];
+    }
+    function closeBulk(){ bulkDlg.close(); resetBulkUI(); }
+
+    // Excel modalını aç/kapat
+    document.getElementById('bulkBtn').addEventListener('click', ()=>{
+      if(!isAuthed()){ alert('Önce giriş yapın.'); return; }
+      resetBulkUI();
+      bulkDlg.showModal();
+    });
+    document.getElementById('bulkClose').addEventListener('click', closeBulk);
+    document.getElementById('bulkCancel').addEventListener('click', closeBulk);
+
+    // Şablon indir (CSV)
+    document.getElementById('downloadTemplate').addEventListener('click', ()=>{
+      const headers = ['name','brand','catalog','category','package','case_qty','img'];
+      const rows = [
+        ['Doğuş Rize Turist','Doğuş','dogus','Dökme Çay','500 g','12','https://.../rize500.png'],
+        ['Doğadan Form','Doğadan','dogadan','Poşet Çay','20 li','24','https://.../form20.png'],
+      ];
+      const csv = [headers.join(','), ...rows.map(r=>r.map(cell=>csvEscape(cell)).join(','))].join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'urun_sablon.csv';
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+    function csvEscape(s){
+      const str = String(s ?? '');
+      return /[",\n]/.test(str) ? `"${str.replace(/"/g,'""')}"` : str;
+    }
+
+    // Dosya seçilince oku
+    bulkFile.addEventListener('change', async ()=>{
+      bulkErr.hidden = true; bulkOk.hidden = true;
+      const f = bulkFile.files?.[0];
+      if(!f){ resetBulkUI(); return; }
+      try{
+        if (typeof XLSX === 'undefined'){
+          resetBulkUI(); bulkErr.hidden=false;
+          bulkErr.textContent = 'Excel kütüphanesi (XLSX) yüklenemedi.'; return;
+        }
+        const data = await f.arrayBuffer();
+        let rows = [];
+        if(f.name.toLowerCase().endsWith('.csv')){
+          const text = new TextDecoder('utf-8').decode(new Uint8Array(data));
+          const wb = XLSX.read(text, {type:'string'}); const ws = wb.Sheets[wb.SheetNames[0]];
+          rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true});
+        }else{
+          const wb = XLSX.read(data, {type:'array'}); const ws = wb.Sheets[wb.SheetNames[0]];
+          rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true});
+        }
+        if(!rows.length) throw new Error('Boş dosya');
+
+        originalHeaders = (rows.shift() || []).map(h => String(h||'').trim());
+        const normKeys = originalHeaders.map(h => normalizeHeader(h));
+
+        const required = ['name','catalog'];
+        const present = new Set(normKeys);
+        const missing = required.filter(k => !present.has(k));
+        if (missing.length){
+          resetBulkUI(); bulkErr.hidden=false;
+          bulkErr.textContent = 'Eksik başlık(lar): ' + missing.join(', ');
+          return;
+        }
+
+        bulkHead.innerHTML = originalHeaders.map(h=>`<th>${escapeHtml(h||'')}</th>`).join('');
+
+        const tmp = [];
+        for(const r of rows){
+          const obj = {};
+          for(let i=0;i<normKeys.length;i++){
+            const key = normKeys[i]; if(!key) continue;
+            obj[key] = r[i] ?? null;
+          }
+          const normalized = normalizeProduct({
+            name: obj.name ?? null, brand: obj.brand ?? null, catalog: obj.catalog ?? null,
+            category: obj.category ?? null, package: obj.package ?? null,
+            case_qty: obj.case_qty ?? null, img: obj.img ?? null, created_at: serverTimestamp()
+          });
+          if(normalized.name && normalized.catalog){ tmp.push(normalized); }
+        }
+        parsedRows = tmp;
+
+        const maxRows = 100;
+        bulkBody.innerHTML = '';
+        const previewRows = rows.slice(0, maxRows);
+        for(const r of previewRows){
+          const tds = originalHeaders.map((_,i)=>`<td class="hard-wrap">${escapeHtml(r[i] ?? '')}</td>`).join('');
+          const tr = document.createElement('tr'); tr.innerHTML = tds; bulkBody.appendChild(tr);
+        }
+        bulkPreviewWrap.style.display = '';
+        bulkStatus.innerHTML = `<span class="status-ok">${parsedRows.length}</span> satır hazır. <span class="muted">(Önizleme ilk ${Math.min(maxRows, rows.length)} satır)</span>`;
+        bulkImportBtn.disabled = parsedRows.length===0;
+      }catch(err){
+        console.error(err); resetBulkUI(); bulkErr.hidden=false;
+        bulkErr.textContent = 'Dosya okunamadı. Başlıkları ve formatı kontrol edin.';
+      }
+    });
+
+    // Toplu içe aktarma
+    document.getElementById('bulkImport').addEventListener('click', async ()=>{
+      if(!isAuthed()){ alert('Önce giriş yapın.'); return; }
+      bulkErr.hidden = true; bulkOk.hidden = true;
+      if(!parsedRows.length){ alert('İçe aktarılacak satır yok.'); return; }
+      if(!confirm(`Toplam ${parsedRows.length} ürünü eklemek istiyor musunuz?`)) return;
+
+      try{
+        for(const p of parsedRows){
+          const newRef = push(ref(db, "products"));
+          await set(newRef, p);
+        }
+        bulkOk.hidden = false;
+        bulkStatus.innerHTML = `<span class="status-ok">${parsedRows.length}</span> ürün eklendi.`;
+        setTimeout(()=>{ closeBulk(); }, 900);
+      }catch(err){
+        console.error(err); bulkErr.hidden = false;
+      }
     });
 
     // ==== Helpers ====

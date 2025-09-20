@@ -53,20 +53,16 @@
 
           <!-- Aksiyon butonları (login sonrası görünür) -->
           <button id="addBtn" class="desknav__tab desknav__tab--action" style="display:none">
-        
             <span>Ekle</span>
           </button>
           <button id="bulkBtn" class="desknav__tab desknav__tab--action" style="display:none">
-        
             <span>Excel</span>
           </button>
           <button id="manageBtn" class="desknav__tab desknav__tab--action" style="display:none">
-  
             <span>Ürünler</span>
           </button>
 
           <button id="loginBtn" class="desknav__tab desknav__tab--ghost">
-       
             <span>Giriş</span>
           </button>
         </nav>
@@ -143,6 +139,12 @@
         <div class="form__row grid2__span">
           <label>Görsel URL</label>
           <input type="url" name="img" placeholder="https://.../urun.png" />
+        </div>
+        <!-- YENİ: Dosyadan yükleme -->
+        <div class="form__row grid2__span">
+          <label>Görsel Yükle (opsiyonel)</label>
+          <input type="file" name="imgFile" id="imgFile" accept="image/*" />
+          <small class="hint">Bir dosya seçersen, URL yerine bu dosya yüklenecek ve linki otomatik yazılacaktır.</small>
         </div>
       </div>
 
@@ -247,7 +249,7 @@
   <!-- SRI olmadan güvenli yükleme; SRI uyuşmazlığı script'i engelleyebiliyor -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <!-- Firebase + Markalar RTDB'den + Giriş/Ürün Ekle/Sil + Toplu Ekle -->
+  <!-- Firebase + Markalar RTDB'den + Giriş/Ürün Ekle/Sil + Toplu Ekle + Storage Upload -->
   <script type="module">
     // ==== Firebase config ====
     const firebaseConfig = {
@@ -265,10 +267,13 @@
     import {
       getDatabase, ref, push, set, serverTimestamp, get, child, remove, onValue
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     // Başlat
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
+    const storage = getStorage(app);
 
     // ==== DEMO Auth (client-side) ====
     const LOGIN_USER = "admin";
@@ -294,8 +299,6 @@
         manageBtn.style.display = "";
         loginBtn.querySelector("span:last-child").textContent = "Çıkış";
         loginBtn.classList.remove("desknav__tab--ghost");
-
-        // COMPACT NAV: login sonrası alanı küçült
         document.body.classList.add('compact-actions');
       }else{
         addBtn.style.display = "none";
@@ -303,8 +306,6 @@
         manageBtn.style.display = "none";
         loginBtn.querySelector("span:last-child").textContent = "Giriş";
         loginBtn.classList.add("desknav__tab--ghost");
-
-        // COMPACT NAV: çıkışta geri al
         document.body.classList.remove('compact-actions');
       }
     }
@@ -339,11 +340,13 @@
     document.getElementById("productCancel").addEventListener("click", closeProduct);
     document.getElementById("productCancelX").addEventListener("click", closeProduct);
     addBtn.addEventListener("click", ()=> productDlg.showModal());
+
     productForm.addEventListener("submit", async (e)=>{
       e.preventDefault();
       if(!isAuthed()){ alert("Önce giriş yapın."); return; }
+
       const fd = new FormData(productForm);
-      const product = normalizeProduct({
+      const raw = {
         name: (fd.get("name")||"").trim(),
         brand: (fd.get("brand")||"").trim() || null,
         catalog: (fd.get("catalog")||"").trim(),
@@ -352,15 +355,36 @@
         case_qty: fd.get("case_qty") ? Number(fd.get("case_qty")) : null,
         img: (fd.get("img")||"").trim() || null,
         created_at: serverTimestamp()
-      });
+      };
 
       const okEl = document.getElementById("productOk");
       const errEl= document.getElementById("productError");
       okEl.hidden = true; errEl.hidden = true;
 
       try{
+        // Dosya var mı?
+        const file = fd.get("imgFile");
+        let finalImgUrl = raw.img || null;
+
+        if (file && file instanceof File && file.size > 0) {
+          const cat = (raw.catalog || slugify(raw.name || "urun")).toLowerCase();
+          const base = slugify(`${raw.name || "urun"}`) || "urun";
+          const ext  = file.type?.split("/")[1] || "jpg";
+          const key  = `products/${cat}/${base}-${Date.now()}.${ext}`;
+
+          const storageRef = sRef(storage, key);
+          await uploadBytes(storageRef, file);
+          finalImgUrl = await getDownloadURL(storageRef);
+        }
+
+        const product = normalizeProduct({
+          ...raw,
+          img: finalImgUrl
+        });
+
         const newRef = push(ref(db, "products"));
         await set(newRef, product);
+
         okEl.hidden = false;
         productForm.reset();
         setTimeout(()=>{ closeProduct(); okEl.hidden = true; }, 700);
@@ -563,7 +587,6 @@
       const f = bulkFile.files?.[0];
       if(!f){ resetBulkUI(); return; }
       try{
-        // XLSX hazır mı kontrol (koruma)
         if (typeof XLSX === 'undefined') {
           resetBulkUI();
           bulkErr.hidden = false;
@@ -574,7 +597,6 @@
         const data = await f.arrayBuffer();
         let rows = [];
         if(f.name.toLowerCase().endsWith('.csv')){
-          // CSV'yi metin olarak oku (ayırıcı otomatik algılanır)
           const text = new TextDecoder('utf-8').decode(new Uint8Array(data));
           const wb = XLSX.read(text, {type:'string'});
           const ws = wb.Sheets[wb.SheetNames[0]];
@@ -623,7 +645,6 @@
             img: obj.img ?? null,
             created_at: serverTimestamp()
           });
-          // minimum: name + catalog
           if(normalized.name && normalized.catalog){
             tmp.push(normalized);
           }
@@ -699,6 +720,15 @@
         }
       }
       return p;
+    }
+
+    function slugify(s){
+      return String(s || "")
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g,"") // aksan temizle
+        .replace(/[^a-zA-Z0-9]+/g,"-")
+        .replace(/^-+|-+$/g,"")
+        .toLowerCase();
     }
 
     // Devreye al

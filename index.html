@@ -14,8 +14,31 @@
   <link rel="stylesheet" href="common.css">
   <!-- bu sayfanın stilleri -->
   <link rel="stylesheet" href="index.css">
+
+  <!-- Basit notif bar stili -->
+  <style>
+    .notifbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: none;
+      padding: 10px 14px;
+      color: #fff;
+      z-index: 9999;
+      font-weight: 600;
+      text-align: center;
+    }
+    .notifbar--info { background: #3b82f6; }   /* mavi */
+    .notifbar--ok { background: #22c55e; }     /* yeşil */
+    .notifbar--err { background: #ef4444; }    /* kırmızı */
+    body.__pushdown { padding-top: 44px; }     /* bar açıkken içerik zıplamasın diye */
+  </style>
 </head>
 <body>
+  <!-- ==== NOTIF BAR ==== -->
+  <div id="notifBar" class="notifbar notifbar--info" role="status" aria-live="polite"></div>
+
   <!-- ==== DESKTOP NAV ==== -->
   <header class="desknav" role="banner" style="--accent:#54577D">
     <div class="desknav__wrap">
@@ -136,15 +159,12 @@
           <label>Koli Adedi</label>
           <input type="number" name="case_qty" placeholder="12" min="0" />
         </div>
+        <!-- URL ALANI KALDIRILDI -->
+        <!-- YENİ: Sadece dosyadan yükleme -->
         <div class="form__row grid2__span">
-          <label>Görsel URL</label>
-          <input type="url" name="img" placeholder="https://.../urun.png" />
-        </div>
-        <!-- YENİ: Dosyadan yükleme -->
-        <div class="form__row grid2__span">
-          <label>Görsel Yükle (opsiyonel)</label>
-          <input type="file" name="imgFile" id="imgFile" accept="image/*" />
-          <small class="hint">Bir dosya seçersen, URL yerine bu dosya yüklenecek ve linki otomatik yazılacaktır.</small>
+          <label>Görsel Yükle</label>
+          <input type="file" name="imgFile" id="imgFile" accept="image/*" required />
+          <small class="hint">Görsel seçmeden ürün kaydedilemez.</small>
         </div>
       </div>
 
@@ -243,13 +263,26 @@
         t.setAttribute('aria-current', isHere ? 'page' : 'false');
       });
     })();
+
+    // Basit notif yardımcıları
+    const notifBar = document.getElementById('notifBar');
+    function showNotif(msg, type='info'){
+      notifBar.textContent = msg;
+      notifBar.classList.remove('notifbar--info','notifbar--ok','notifbar--err');
+      notifBar.classList.add(type==='ok'?'notifbar--ok':type==='err'?'notifbar--err':'notifbar--info');
+      notifBar.style.display = 'block';
+      document.body.classList.add('__pushdown');
+    }
+    function hideNotif(){
+      notifBar.style.display = 'none';
+      document.body.classList.remove('__pushdown');
+    }
   </script>
 
   <!-- SheetJS (Excel/CSV okumak için) -->
-  <!-- SRI olmadan güvenli yükleme; SRI uyuşmazlığı script'i engelleyebiliyor -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <!-- Firebase + Markalar RTDB'den + Giriş/Ürün Ekle/Sil + Toplu Ekle + Storage Upload -->
+  <!-- Firebase + RTDB + Storage Upload -->
   <script type="module">
     // ==== Firebase config ====
     const firebaseConfig = {
@@ -346,36 +379,38 @@
       if(!isAuthed()){ alert("Önce giriş yapın."); return; }
 
       const fd = new FormData(productForm);
-      const raw = {
-        name: (fd.get("name")||"").trim(),
-        brand: (fd.get("brand")||"").trim() || null,
-        catalog: (fd.get("catalog")||"").trim(),
-        category: (fd.get("category")||"").trim() || null,
-        package: (fd.get("package")||"").trim() || null,
-        case_qty: fd.get("case_qty") ? Number(fd.get("case_qty")) : null,
-        img: (fd.get("img")||"").trim() || null,
-        created_at: serverTimestamp()
-      };
+      const file = fd.get("imgFile");
 
       const okEl = document.getElementById("productOk");
       const errEl= document.getElementById("productError");
       okEl.hidden = true; errEl.hidden = true;
 
       try{
-        // Dosya var mı?
-        const file = fd.get("imgFile");
-        let finalImgUrl = raw.img || null;
-
-        if (file && file instanceof File && file.size > 0) {
-          const cat = (raw.catalog || slugify(raw.name || "urun")).toLowerCase();
-          const base = slugify(`${raw.name || "urun"}`) || "urun";
-          const ext  = file.type?.split("/")[1] || "jpg";
-          const key  = `products/${cat}/${base}-${Date.now()}.${ext}`;
-
-          const storageRef = sRef(storage, key);
-          await uploadBytes(storageRef, file);
-          finalImgUrl = await getDownloadURL(storageRef);
+        // Görsel zorunlu
+        if(!(file && file instanceof File && file.size > 0)){
+          throw new Error("Lütfen bir görsel seçin.");
         }
+
+        showNotif("Ürününüz ekleniyor…", "info");
+
+        const raw = {
+          name: (fd.get("name")||"").trim(),
+          brand: (fd.get("brand")||"").trim() || null,
+          catalog: (fd.get("catalog")||"").trim(),
+          category: (fd.get("category")||"").trim() || null,
+          package: (fd.get("package")||"").trim() || null,
+          case_qty: fd.get("case_qty") ? Number(fd.get("case_qty")) : null,
+          created_at: serverTimestamp()
+        };
+
+        const cat = (raw.catalog || slugify(raw.name || "urun")).toLowerCase();
+        const base = slugify(`${raw.name || "urun"}`) || "urun";
+        const ext  = file.type?.split("/")[1] || "jpg";
+        const key  = `products/${cat}/${base}-${Date.now()}.${ext}`;
+
+        const storageRef = sRef(storage, key);
+        await uploadBytes(storageRef, file, { contentType: file.type });
+        const finalImgUrl = await getDownloadURL(storageRef);
 
         const product = normalizeProduct({
           ...raw,
@@ -385,11 +420,14 @@
         const newRef = push(ref(db, "products"));
         await set(newRef, product);
 
-        okEl.hidden = false;
+        hideNotif();                // başarıyla bitti → barı kapat
+        okEl.hidden = false;        // küçük başarı mesajını da bir an göster
         productForm.reset();
         setTimeout(()=>{ closeProduct(); okEl.hidden = true; }, 700);
       }catch(err){
         console.error(err);
+        showNotif("Yüklenemedi. Lütfen tekrar deneyin.", "err");  // hata → bar kırmızı
+        setTimeout(()=> hideNotif(), 3000);                       // 3 sn sonra kapat
         errEl.hidden = false;
       }
     });
@@ -725,7 +763,7 @@
     function slugify(s){
       return String(s || "")
         .normalize("NFKD")
-        .replace(/[\u0300-\u036f]/g,"") // aksan temizle
+        .replace(/[\u0300-\u036f]/g,"")
         .replace(/[^a-zA-Z0-9]+/g,"-")
         .replace(/^-+|-+$/g,"")
         .toLowerCase();

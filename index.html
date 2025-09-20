@@ -15,32 +15,18 @@
   <!-- bu sayfanın stilleri -->
   <link rel="stylesheet" href="index.css">
 
-  <!-- Basit notif bar + avatar stili -->
+  <!-- notif bar + avatar stil -->
   <style>
-    .notifbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      display: none;
-      padding: 10px 14px;
-      color: #fff;
-      z-index: 9999;
-      font-weight: 600;
-      text-align: center;
-    }
-    .notifbar--info { background: #3b82f6; }
-    .notifbar--ok   { background: #22c55e; }
-    .notifbar--err  { background: #ef4444; }
-    body.__pushdown { padding-top: 44px; }
+    .notifbar{position:fixed;top:0;left:0;right:0;display:none;padding:10px 14px;color:#fff;z-index:9999;font-weight:600;text-align:center}
+    .notifbar--info{background:#3b82f6}.notifbar--ok{background:#22c55e}.notifbar--err{background:#ef4444}
+    body.__pushdown{padding-top:44px}
 
-    /* Marka avatarı: ilk harf */
+    /* Marka avatarı (ilk harf) */
     .brand__avatar{
-      width: 72px; height: 72px; border-radius: 12px;
-      background:#0b0d12; color:#fff; display:grid; place-items:center;
-      font-weight:700; font-size:28px; flex-shrink:0; user-select:none;
+      width:72px;height:72px;border-radius:12px;background:#0b0d12;color:#fff;
+      display:grid;place-items:center;font-weight:700;font-size:28px;flex-shrink:0;user-select:none
     }
-    @media (max-width: 560px){
-      .brand__avatar{ width: 56px; height:56px; font-size:22px; }
-    }
+    @media (max-width:560px){.brand__avatar{width:56px;height:56px;font-size:22px}}
   </style>
 </head>
 <body>
@@ -51,16 +37,11 @@
   <header class="desknav" role="banner" style="--accent:#54577D">
     <div class="desknav__wrap">
       <div class="desknav__inner">
-        <!-- Sol: Logo + Başlık -->
         <div class="desknav__brand">
-          <img class="desknav__logo"
-               src="assets/logo-150.png"
-               alt="VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ Logo"
-               onerror="this.style.display='none'">
+          <img class="desknav__logo" src="assets/logo-150.png" alt="VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ Logo" onerror="this.style.display='none'">
           <span class="desknav__title">VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ DAĞITIM</span>
         </div>
 
-        <!-- Sağ: Sekmeler + Giriş/Ürün Aksiyonları -->
         <nav class="desknav__tabs" aria-label="Ana gezinme">
           <a class="desknav__tab" href="index.html" aria-current="page">
             <span class="desknav__icon" aria-hidden="true">
@@ -76,26 +57,17 @@
           </a>
           <a class="desknav__tab" href="contact.html">
             <span class="desknav__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z"
-              fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </span>
             <span>İletişim</span>
           </a>
 
           <!-- Aksiyon butonları (login sonrası görünür) -->
-          <button id="addBtn" class="desknav__tab desknav__tab--action" style="display:none">
-            <span>Ekle</span>
-          </button>
-          <button id="bulkBtn" class="desknav__tab desknav__tab--action" style="display:none">
-            <span>Excel</span>
-          </button>
-          <button id="manageBtn" class="desknav__tab desknav__tab--action" style="display:none">
-            <span>Ürünler</span>
-          </button>
+          <button id="addBtn"   class="desknav__tab desknav__tab--action" style="display:none"><span>Ekle</span></button>
+          <button id="bulkBtn"  class="desknav__tab desknav__tab--action" style="display:none"><span>Excel</span></button>
+          <button id="manageBtn"class="desknav__tab desknav__tab--action" style="display:none"><span>Ürünler</span></button>
 
-          <button id="loginBtn" class="desknav__tab desknav__tab--ghost">
-            <span>Giriş</span>
-          </button>
+          <button id="loginBtn" class="desknav__tab desknav__tab--ghost"><span>Giriş</span></button>
         </nav>
       </div>
     </div>
@@ -127,7 +99,6 @@
           <input type="password" name="pass" placeholder="••••••••" required autocomplete="current-password" />
         </div>
       </div>
-      <!-- Demo ipucu KALDIRILDI -->
       <p class="form__error" id="loginError" hidden>Hatalı kullanıcı adı veya şifre.</p>
       <div class="modal__actions">
         <button class="btn" value="cancel" type="button" id="loginCancel2">İptal</button>
@@ -167,8 +138,6 @@
           <label>Koli Adedi</label>
           <input type="number" name="case_qty" placeholder="12" min="0" />
         </div>
-        <!-- URL ALANI KALDIRILDI -->
-        <!-- YENİ: Sadece dosyadan yükleme -->
         <div class="form__row grid2__span">
           <label>Görsel Yükle</label>
           <input type="file" name="imgFile" id="imgFile" accept="image/*" required />
@@ -186,19 +155,15 @@
     </form>
   </dialog>
 
-  <!-- Ürünleri Yönet Modal (liste + silme) -->
+  <!-- Ürünleri Yönet Modal -->
   <dialog id="manageModal" class="modal">
     <div class="modal__card" id="manageCard">
       <button class="modal__x" type="button" id="manageClose">✕</button>
       <h3 class="modal__title">Ürünleri Yönet</h3>
 
       <div class="toolbar">
-        <div class="left">
-          <input id="mSearch" class="input" placeholder="Ada, markaya ya da kategoriye göre ara…" />
-        </div>
-        <div class="right">
-          <span class="pill"><strong id="mCount">0</strong> adet ürün</span>
-        </div>
+        <div class="left"><input id="mSearch" class="input" placeholder="Ada, markaya ya da kategoriye göre ara…"/></div>
+        <div class="right"><span class="pill"><strong id="mCount">0</strong> adet ürün</span></div>
       </div>
 
       <div class="scroll-x">
@@ -224,7 +189,7 @@
     </div>
   </dialog>
 
-  <!-- Toplu Ekle (Excel/CSV) Modal -->
+  <!-- Toplu Ekle (Excel/CSV) -->
   <dialog id="bulkModal" class="modal">
     <div class="modal__card" id="bulkCard">
       <button class="modal__x" type="button" id="bulkClose">✕</button>
@@ -237,12 +202,8 @@
       </div>
 
       <div class="toolbar" style="margin-top:12px">
-        <div class="left">
-          <button class="btn" id="downloadTemplate">Şablon İndir (CSV)</button>
-        </div>
-        <div class="right">
-          <span id="bulkStatus" class="muted">Dosya seçin…</span>
-        </div>
+        <div class="left"><button class="btn" id="downloadTemplate">Şablon İndir (CSV)</button></div>
+        <div class="right"><span id="bulkStatus" class="muted">Dosya seçin…</span></div>
       </div>
 
       <div id="bulkPreviewWrap" class="scroll-x" style="display:none;">
@@ -257,13 +218,13 @@
         <button class="btn btn--primary" id="bulkImport" disabled>İçe Aktar</button>
       </div>
       <p class="form__success" id="bulkOk" hidden>Toplu ekleme tamamlandı.</p>
-      <p class="form__error" id="bulkErr" hidden>Toplu ekeleme sırasında hata oluştu.</p>
+      <p class="form__error" id="bulkErr" hidden>Toplu ekleme sırasında hata oluştu.</p>
     </div>
   </dialog>
 
   <!-- ===== SCRIPTS ===== -->
   <script>
-    // Aktif sekme emniyet
+    // Aktif sekme
     (function(){
       const here = (location.pathname.split('/').pop() || 'index.html');
       document.querySelectorAll('.desknav__tab[href]').forEach(t=>{
@@ -272,7 +233,7 @@
       });
     })();
 
-    // Basit notif yardımcıları
+    // Notif yardımcıları
     const notifBar = document.getElementById('notifBar');
     function showNotif(msg, type='info'){
       notifBar.textContent = msg;
@@ -281,16 +242,13 @@
       notifBar.style.display = 'block';
       document.body.classList.add('__pushdown');
     }
-    function hideNotif(){
-      notifBar.style.display = 'none';
-      document.body.classList.remove('__pushdown');
-    }
+    function hideNotif(){ notifBar.style.display='none'; document.body.classList.remove('__pushdown'); }
   </script>
 
-  <!-- SheetJS (Excel/CSV okumak için) -->
+  <!-- SheetJS -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <!-- Firebase + RTDB + Storage Upload -->
+  <!-- Firebase + RTDB + Storage -->
   <script type="module">
     // ==== Firebase config ====
     const firebaseConfig = {
@@ -305,9 +263,8 @@
     };
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getDatabase, ref, push, set, serverTimestamp, get, child, remove, onValue
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getDatabase, ref, push, set, serverTimestamp, get, child, remove, onValue }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
     import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
@@ -316,11 +273,11 @@
     const db  = getDatabase(app);
     const storage = getStorage(app, "gs://veliogluglobal-86631.firebasestorage.app");
 
-    // ==== DEMO Auth (client-side) ====
+    // DEMO Auth (client-side)
     const LOGIN_USER = "admin";
     const LOGIN_PASS = "veliogluGlobal34";
-    const isAuthed   = () => localStorage.getItem("isAdmin") === "1";
-    const setAuthed  = (v) => (v ? localStorage.setItem("isAdmin","1") : localStorage.removeItem("isAdmin"));
+    const isAuthed  = () => localStorage.getItem("isAdmin") === "1";
+    const setAuthed = (v) => (v ? localStorage.setItem("isAdmin","1") : localStorage.removeItem("isAdmin"));
 
     const loginBtn   = document.getElementById("loginBtn");
     const addBtn     = document.getElementById("addBtn");
@@ -335,16 +292,12 @@
 
     function refreshAuthUI(){
       if(isAuthed()){
-        addBtn.style.display = "";
-        bulkBtn.style.display = "";
-        manageBtn.style.display = "";
+        addBtn.style.display = ""; bulkBtn.style.display = ""; manageBtn.style.display = "";
         loginBtn.querySelector("span:last-child").textContent = "Çıkış";
         loginBtn.classList.remove("desknav__tab--ghost");
         document.body.classList.add('compact-actions');
       }else{
-        addBtn.style.display = "none";
-        bulkBtn.style.display = "none";
-        manageBtn.style.display = "none";
+        addBtn.style.display = "none"; bulkBtn.style.display = "none"; manageBtn.style.display = "none";
         loginBtn.querySelector("span:last-child").textContent = "Giriş";
         loginBtn.classList.add("desknav__tab--ghost");
         document.body.classList.remove('compact-actions');
@@ -367,10 +320,7 @@
       const p = (fd.get("pass")||"").trim();
       const err = document.getElementById("loginError");
       if(u === LOGIN_USER && p === LOGIN_PASS){
-        setAuthed(true);
-        err.hidden = true;
-        closeLogin();
-        refreshAuthUI();
+        setAuthed(true); err.hidden = true; closeLogin(); refreshAuthUI();
       }else{
         err.hidden = false;
       }
@@ -420,10 +370,7 @@
         await uploadBytes(storageRef, file, { contentType: file.type });
         const finalImgUrl = await getDownloadURL(storageRef);
 
-        const product = normalizeProduct({
-          ...raw,
-          img: finalImgUrl
-        });
+        const product = normalizeProduct({ ...raw, img: finalImgUrl });
 
         const newRef = push(ref(db, "products"));
         await set(newRef, product);
@@ -442,7 +389,7 @@
       }
     });
 
-    // ==== Markaları RTDB'den çıkar & çiz ====
+    // ==== Markalar (tekilleştirilmiş) ====
     async function renderBrandsFromRTDB(){
       const wrap = document.getElementById('brands');
       wrap.innerHTML = '';
@@ -453,23 +400,23 @@
         document.getElementById("y").textContent = new Date().getFullYear();
         return;
       }
-      const data = snap.val(); // {autoId: product,...}
+      const data = snap.val();
 
-      // brand normalization → tekil eşleme
-      // key: UPPER(TR) + tek boşluklu trim; displayName: ilk görünen asıl yazım
-      const brandMap = new Map(); // key -> { displayName, count }
+      // key: normalizeBrandKey, value: { displayName, count }
+      const brandMap = new Map();
       for (const p of Object.values(data)){
-        const rawBrand = (p.brand || '').trim();
+        const rawBrand = (p.brand ?? '').trim();
         if(!rawBrand) continue;
-        const displayName = collapseSpaces(rawBrand);
-        const key = displayName.toLocaleUpperCase('tr-TR');
+
+        const displayName = collapseSpaces(rawBrand);     // görünen isim
+        const key = normalizeBrandKey(rawBrand);          // tekilleştirici anahtar
+
         if(!brandMap.has(key)){
           brandMap.set(key, { displayName, count: 0 });
         }
         brandMap.get(key).count++;
       }
 
-      // sıralama: alfabetik (TR duyarlı)
       const items = [...brandMap.values()]
         .sort((a,b)=> a.displayName.localeCompare(b.displayName, 'tr'));
 
@@ -490,8 +437,8 @@
       document.getElementById("y").textContent = new Date().getFullYear();
     }
 
-    // Yönetim listesi: canlı dinleme + tablo doldurma
-    let _allProducts = []; // {id, ...product}
+    // Yönetim listesi: canlı dinleme + tablo
+    let _allProducts = [];
     function liveBindProducts(){
       onValue(ref(db, "products"), (snap)=>{
         const arr = [];
@@ -503,7 +450,7 @@
         }
         _allProducts = arr;
         renderManageTable();
-        renderBrandsFromRTDB(); // markaları da güncelle
+        renderBrandsFromRTDB(); // markaları güncelle
       });
     }
 
@@ -531,26 +478,13 @@
           <td>${escapeHtml(p.package||'-')}</td>
           <td>${p.case_qty ?? '-'}</td>
           <td>${p.img ? `<a href="${p.img}" target="_blank" rel="noopener">gör</a>` : '-'}</td>
-          <td>
-            <div class="row-actions">
-              <button class="btn" data-del="${p.id}">Sil</button>
-            </div>
-          </td>
+          <td><div class="row-actions"><button class="btn" data-del="${p.id}">Sil</button></div></td>
         `;
         mTbody.appendChild(tr);
       }
     }
 
-    function escapeHtml(s){
-      return String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-    }
-    function collapseSpaces(s){
-      return String(s||'').replace(/\s+/g,' ').trim();
-    }
-
-    mSearch.addEventListener('input', renderManageTable);
-
-    // Silme işlevi
+    // Silme
     mTbody.addEventListener('click', async (e)=>{
       const btn = e.target.closest('button[data-del]');
       if(!btn) return;
@@ -559,19 +493,14 @@
       if(!isAuthed()){ alert('Önce giriş yapın.'); return; }
       const ok = confirm(`Bu ürünü silmek istediğinize emin misiniz?\nID: ${id}`);
       if(!ok) return;
-      try{
-        await remove(ref(db, `products/${id}`));
-      }catch(err){
-        console.error(err);
-        alert('Silinirken bir hata oluştu.');
-      }
+      try{ await remove(ref(db, `products/${id}`)); }
+      catch(err){ console.error(err); alert('Silinirken bir hata oluştu.'); }
     });
 
     // Modal aç/kapat
     document.getElementById('manageBtn').addEventListener('click', ()=>{
       if(!isAuthed()){ alert('Önce giriş yapın.'); return; }
-      renderManageTable();
-      manageDlg.showModal();
+      renderManageTable(); manageDlg.showModal();
     });
     document.getElementById('manageClose').addEventListener('click', ()=> manageDlg.close());
 
@@ -585,123 +514,93 @@
     const bulkErr = document.getElementById('bulkErr');
     const bulkOk = document.getElementById('bulkOk');
 
-    let parsedRows = []; // normalize edilmiş objeler
+    let parsedRows = [];
     let originalHeaders = [];
 
     function resetBulkUI(){
       bulkStatus.textContent = 'Dosya seçin…';
       bulkPreviewWrap.style.display = 'none';
-      bulkHead.innerHTML = '';
-      bulkBody.innerHTML = '';
-      bulkImportBtn.disabled = true;
-      bulkErr.hidden = true;
-      bulkOk.hidden = true;
-      parsedRows = [];
-      originalHeaders = [];
+      bulkHead.innerHTML = ''; bulkBody.innerHTML = '';
+      bulkImportBtn.disabled = true; bulkErr.hidden = true; bulkOk.hidden = true;
+      parsedRows = []; originalHeaders = [];
     }
-
     function closeBulk(){ bulkDlg.close(); resetBulkUI(); }
 
     document.getElementById('bulkBtn').addEventListener('click', ()=>{
       if(!isAuthed()){ alert('Önce giriş yapın.'); return; }
-      resetBulkUI();
-      bulkDlg.showModal();
+      resetBulkUI(); bulkDlg.showModal();
     });
     document.getElementById('bulkClose').addEventListener('click', closeBulk);
     document.getElementById('bulkCancel').addEventListener('click', closeBulk);
 
-    // Şablon indir (CSV)
     document.getElementById('downloadTemplate').addEventListener('click', ()=>{
       const headers = ['name','brand','catalog','category','package','case_qty','img'];
       const rows = [
-        ['Doğuş Rize Turist', 'Doğuş', 'dogus', 'Dökme Çay', '500 g', '12', 'https://.../rize500.png'],
-        ['Doğadan Form', 'Doğadan', 'dogadan', 'Poşet Çay', '20 li', '24', 'https://.../form20.png'],
+        ['Doğuş Rize Turist','Doğuş','dogus','Dökme Çay','500 g','12','https://.../rize500.png'],
+        ['Doğadan Form','Doğadan','dogadan','Poşet Çay','20 li','24','https://.../form20.png'],
       ];
       const csv = [headers.join(','), ...rows.map(r=>r.map(cell=>csvEscape(cell)).join(','))].join('\n');
       const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'urun_sablon.csv';
-      document.body.appendChild(a); a.click(); a.remove();
-      URL.revokeObjectURL(url);
+      const a = document.createElement('a'); a.href = url; a.download = 'urun_sablon.csv';
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     });
     function csvEscape(s){
       const str = String(s ?? '');
-      if(/[",\n]/.test(str)) return `"${str.replace(/"/g,'""')}"`;
-      return str;
+      return /[",\n]/.test(str) ? `"${str.replace(/"/g,'""')}"` : str;
     }
 
-    // Dosya seçilince oku
     bulkFile.addEventListener('change', async ()=>{
       bulkErr.hidden = true; bulkOk.hidden = true;
       const f = bulkFile.files?.[0];
       if(!f){ resetBulkUI(); return; }
       try{
-        if (typeof XLSX === 'undefined') {
-          resetBulkUI();
-          bulkErr.hidden = false;
-          bulkErr.textContent = 'Excel kütüphanesi (XLSX) yüklenemedi. İnternet erişimini ve script etiketini kontrol edin.';
-          return;
+        if (typeof XLSX === 'undefined'){
+          resetBulkUI(); bulkErr.hidden=false;
+          bulkErr.textContent = 'Excel kütüphanesi (XLSX) yüklenemedi.'; return;
         }
-
         const data = await f.arrayBuffer();
         let rows = [];
         if(f.name.toLowerCase().endsWith('.csv')){
           const text = new TextDecoder('utf-8').decode(new Uint8Array(data));
-          const wb = XLSX.read(text, {type:'string'});
-          const ws = wb.Sheets[wb.SheetNames[0]];
+          const wb = XLSX.read(text, {type:'string'}); const ws = wb.Sheets[wb.SheetNames[0]];
           rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true});
         }else{
-          const wb = XLSX.read(data, {type:'array'});
-          const ws = wb.Sheets[wb.SheetNames[0]];
+          const wb = XLSX.read(data, {type:'array'}); const ws = wb.Sheets[wb.SheetNames[0]];
           rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true});
         }
-        if(!rows.length){ throw new Error('Boş dosya'); }
+        if(!rows.length) throw new Error('Boş dosya');
 
-        // Başlıklar
         originalHeaders = (rows.shift() || []).map(h => String(h||'').trim());
         const normKeys = originalHeaders.map(h => normalizeHeader(h));
 
-        // Minimum gerekli başlıklar kontrolü
         const required = ['name','catalog'];
         const present = new Set(normKeys);
         const missing = required.filter(k => !present.has(k));
         if (missing.length){
-          resetBulkUI();
-          bulkErr.hidden = false;
-          bulkErr.textContent = 'Eksik başlık(lar): ' + missing.join(', ') + '. İlk satırın başlık olduğundan emin olun.';
+          resetBulkUI(); bulkErr.hidden=false;
+          bulkErr.textContent = 'Eksik başlık(lar): ' + missing.join(', ');
           return;
         }
 
-        // Önizleme başlık çiz
         bulkHead.innerHTML = originalHeaders.map(h=>`<th>${escapeHtml(h||'')}</th>`).join('');
 
-        // Satırları normalize et
         const tmp = [];
         for(const r of rows){
           const obj = {};
           for(let i=0;i<normKeys.length;i++){
-            const key = normKeys[i];
-            if(!key) continue;
+            const key = normKeys[i]; if(!key) continue;
             obj[key] = r[i] ?? null;
           }
           const normalized = normalizeProduct({
-            name: obj.name ?? null,
-            brand: obj.brand ?? null,
-            catalog: obj.catalog ?? null,
-            category: obj.category ?? null,
-            package: obj.package ?? null,
-            case_qty: obj.case_qty ?? null,
-            img: obj.img ?? null,
-            created_at: serverTimestamp()
+            name: obj.name ?? null, brand: obj.brand ?? null, catalog: obj.catalog ?? null,
+            category: obj.category ?? null, package: obj.package ?? null,
+            case_qty: obj.case_qty ?? null, img: obj.img ?? null, created_at: serverTimestamp()
           });
-          if(normalized.name && normalized.catalog){
-            tmp.push(normalized);
-          }
+          if(normalized.name && normalized.catalog){ tmp.push(normalized); }
         }
         parsedRows = tmp;
 
-        // Önizleme (ilk 100 satır)
         const maxRows = 100;
         bulkBody.innerHTML = '';
         const previewRows = rows.slice(0, maxRows);
@@ -713,20 +612,16 @@
         bulkStatus.innerHTML = `<span class="status-ok">${parsedRows.length}</span> satır hazır. <span class="muted">(Önizleme ilk ${Math.min(maxRows, rows.length)} satır)</span>`;
         bulkImportBtn.disabled = parsedRows.length===0;
       }catch(err){
-        console.error(err);
-        resetBulkUI();
-        bulkErr.hidden = false;
+        console.error(err); resetBulkUI(); bulkErr.hidden=false;
         bulkErr.textContent = 'Dosya okunamadı. Başlıkları ve formatı kontrol edin.';
       }
     });
 
-    // Toplu içe aktarma
     document.getElementById('bulkImport').addEventListener('click', async ()=>{
       if(!isAuthed()){ alert('Önce giriş yapın.'); return; }
       bulkErr.hidden = true; bulkOk.hidden = true;
       if(!parsedRows.length){ alert('İçe aktarılacak satır yok.'); return; }
-      const confirmTxt = `Toplam ${parsedRows.length} ürünü eklemek istiyor musunuz?`;
-      if(!confirm(confirmTxt)) return;
+      if(!confirm(`Toplam ${parsedRows.length} ürünü eklemek istiyor musunuz?`)) return;
 
       try{
         for(const p of parsedRows){
@@ -737,8 +632,7 @@
         bulkStatus.innerHTML = `<span class="status-ok">${parsedRows.length}</span> ürün eklendi.`;
         setTimeout(()=>{ closeBulk(); }, 900);
       }catch(err){
-        console.error(err);
-        bulkErr.hidden = false;
+        console.error(err); bulkErr.hidden = false;
       }
     });
 
@@ -754,36 +648,41 @@
       if(['img','image','görsel','gorsel','image_url','url'].includes(s)) return 'img';
       return s;
     }
-
     function normalizeProduct(p){
       let cq = p.case_qty;
       if(cq!==null && cq!==undefined && cq!==''){
-        const n = Number(cq);
-        p.case_qty = Number.isFinite(n) ? n : null;
-      }else{
-        p.case_qty = null;
-      }
+        const n = Number(cq); p.case_qty = Number.isFinite(n) ? n : null;
+      }else{ p.case_qty = null; }
       for(const k of ['name','brand','catalog','category','package','img']){
         if(p[k]!==null && p[k]!==undefined){
-          p[k] = String(p[k]).trim();
-          if(p[k]==='') p[k] = null;
+          p[k] = String(p[k]).trim(); if(p[k]==='') p[k] = null;
         }
       }
       return p;
     }
-
+    function escapeHtml(s){
+      return String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+    function collapseSpaces(s){
+      return String(s||'')
+        .replace(/[\u00A0\u200B-\u200D\uFEFF]/g, ' ') // NBSP & zero-width
+        .replace(/\s+/g,' ')
+        .trim();
+    }
+    function normalizeBrandKey(s){
+      let t = collapseSpaces(s);
+      t = t.normalize('NFKD').replace(/\p{M}+/gu, ''); // diacritics kaldır
+      t = t.toLocaleUpperCase('tr-TR');
+      return t;
+    }
     function slugify(s){
-      return String(s || "")
-        .normalize("NFKD")
-        .replace(/[\u0300-\u036f]/g,"")
-        .replace(/[^a-zA-Z0-9]+/g,"-")
-        .replace(/^-+|-+$/g,"")
-        .toLowerCase();
+      return String(s||"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"")
+        .replace(/[^a-zA-Z0-9]+/g,"-").replace(/^-+|-+$/g,"").toLowerCase();
     }
 
     // Devreye al
-    liveBindProducts();
-    renderBrandsFromRTDB();
+    liveBindProducts();           // canlı dinleme
+    renderBrandsFromRTDB();       // ilk çizim
     document.getElementById("y").textContent = new Date().getFullYear();
   </script>
 </body>

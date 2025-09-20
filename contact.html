@@ -85,10 +85,10 @@
     <small>© <span id="y"></span> VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ • GitHub Pages</small>
   </footer>
 
-  <!-- Tek kişi için sade JS -->
+  <!-- Çoklu kişi için sade JS -->
   <script>
     const $ = s => document.querySelector(s);
-    function phoneHref(s){ return (s||'').replace(/\s|\(|\)/g,''); }
+    function phoneHref(s){ return String(s||'').replace(/\s|\(|\)/g,''); }
 
     function personRow(p){
       const el = document.createElement('article');
@@ -120,17 +120,25 @@
       return el;
     }
 
-    // Sadece BURHAN ŞİRKET’i ekle
-    const person = {
-      name: "Burhan Şirket",
-      title: "VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ",
-      phone: "+905340391334",
-      img: ""  // varsa buraya yolunu koy; boşsa baş harf avatarı çıkar
-    };
+    // === Kişi listesi (çoklu) ===
+    const people = [
+      {
+        name: "Burhan Cansız",
+        title: "Şirket Yetkilisi",
+        phone: "+90 534 039 13 34",
+        img: ""  // varsa görsel yolu
+      },
+      {
+        name: "Lokman Hekim",
+        title: "Muhasebe Yetkilisi",
+        phone: "+90 530 347 35 18",
+        img: ""  // varsa görsel yolu
+      }
+    ];
 
     (function init(){
       const wrap = $('#people');
-      wrap.replaceChildren(personRow(person));
+      wrap.replaceChildren(...people.map(personRow));
       $('#y').textContent = new Date().getFullYear();
     })();
   </script>

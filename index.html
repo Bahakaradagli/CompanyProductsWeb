@@ -32,68 +32,81 @@
   <div id="notifBar" class="notifbar notifbar--info" role="status" aria-live="polite"></div>
 
   <!-- ==== DESKTOP NAV ==== -->
-  <header class="desknav" role="banner" style="--accent:#54577D">
-    <div class="desknav__wrap">
-      <div class="desknav__inner">
-        <div class="desknav__brand">
-          <img class="desknav__logo" src="assets/logo-150.png" alt="VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ Logo" onerror="this.style.display='none'">
-          <span class="desknav__title">VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ DAĞITIM</span>
-        </div>
+<header class="desknav" role="banner" style="--accent:#54577D">
+  <div class="desknav__wrap">
+    <div class="desknav__inner">
+      <div class="desknav__brand">
+        <!-- 🏠 Anasayfa butonu -->
+        <a class="desknav__tab" href="homepage.html" aria-label="Anasayfa">
+          <span class="desknav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V9.5z" 
+                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>Anasayfa</span>
+        </a>
 
-        <nav class="desknav__tabs" aria-label="Ana gezinme">
-          <a class="desknav__tab" href="index.html" aria-current="page">
-            <span class="desknav__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 4h14m-15 0a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </span>
-            <span>Markalar</span>
-          </a>
-
-          <a class="desknav__tab" href="products.html">
-            <span class="desknav__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M4 7h7v7H4V7Zm9 0h7v7h-7V7ZM8 17h8v3H8v-3Z" fill="currentColor"/></svg>
-            </span>
-            <span>Ürünler</span>
-          </a>
-
-          <a class="desknav__tab" href="contact.html">
-            <span class="desknav__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </span>
-            <span>İletişim</span>
-          </a>
-
-          <!-- Aksiyon (login sonrası) -->
-          <button id="addBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Ürün Ekle">
-            <span class="desknav__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm5 4v10m5-5H7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </span>
-            <span>Ekle</span>
-          </button>
-
-          <button id="bulkBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Toplu Ekle (Excel)">
-            <span class="desknav__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 5h12M9 8v11M15 8v11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </span>
-            <span>Excel</span>
-          </button>
-
-          <button id="manageBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Ürünleri Yönet">
-            <span class="desknav__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z" fill="currentColor"/></svg>
-            </span>
-            <span>Ürünler</span>
-          </button>
-
-          <button id="loginBtn" class="desknav__tab desknav__tab--ghost" aria-label="Giriş">
-            <span class="desknav__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M14 3h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4M10 7l-4 5 4 5M6 12h11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </span>
-            <span>Giriş</span>
-          </button>
-        </nav>
+        <!-- Logo ve başlık -->
+        <img class="desknav__logo" src="assets/logo-150.png" alt="VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ Logo" onerror="this.style.display='none'">
+        <span class="desknav__title">VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ DAĞITIM</span>
       </div>
+
+      <nav class="desknav__tabs" aria-label="Ana gezinme">
+        <a class="desknav__tab" href="index.html" aria-current="page">
+          <span class="desknav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 4h14m-15 0a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <span>Markalar</span>
+        </a>
+
+        <a class="desknav__tab" href="products.html">
+          <span class="desknav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 7h7v7H4V7Zm9 0h7v7h-7V7ZM8 17h8v3H8v-3Z" fill="currentColor"/></svg>
+          </span>
+          <span>Ürünler</span>
+        </a>
+
+        <a class="desknav__tab" href="contact.html">
+          <span class="desknav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <span>İletişim</span>
+        </a>
+
+        <!-- Diğer butonlar (giriş, ekle, excel, yönet) -->
+        <button id="addBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Ürün Ekle">
+          <span class="desknav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm5 4v10m5-5H7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <span>Ekle</span>
+        </button>
+
+        <button id="bulkBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Toplu Ekle (Excel)">
+          <span class="desknav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 5h12M9 8v11M15 8v11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <span>Excel</span>
+        </button>
+
+        <button id="manageBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Ürünleri Yönet">
+          <span class="desknav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z" fill="currentColor"/></svg>
+          </span>
+          <span>Ürünler</span>
+        </button>
+
+        <button id="loginBtn" class="desknav__tab desknav__tab--ghost" aria-label="Giriş">
+          <span class="desknav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M14 3h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4M10 7l-4 5 4 5M6 12h11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <span>Giriş</span>
+        </button>
+      </nav>
     </div>
-  </header>
+  </div>
+</header>
+
 
   <!-- ==== SAYFA ==== -->
   <main class="container">

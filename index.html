@@ -31,73 +31,69 @@
   <!-- ==== NOTIF BAR ==== -->
   <div id="notifBar" class="notifbar notifbar--info" role="status" aria-live="polite"></div>
 
-<!-- ==== DESKTOP NAV ==== -->
-<header class="desknav" role="banner" style="--accent:#54577D">
-  <div class="desknav__wrap">
-    <div class="desknav__inner">
-      <div class="desknav__brand">
-        <img class="desknav__logo" src="assets/logo-150.png" alt="VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ Logo" onerror="this.style.display='none'">
-        <span class="desknav__title">VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ DAĞITIM</span>
+  <!-- ==== DESKTOP NAV ==== -->
+  <header class="desknav" role="banner" style="--accent:#54577D">
+    <div class="desknav__wrap">
+      <div class="desknav__inner">
+        <div class="desknav__brand">
+          <img class="desknav__logo" src="assets/logo-150.png" alt="VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ Logo" onerror="this.style.display='none'">
+          <span class="desknav__title">VELİOĞLU GLOBAL DIŞ TİCARET LİMİTED ŞİRKETİ DAĞITIM</span>
+        </div>
+
+        <nav class="desknav__tabs" aria-label="Ana gezinme">
+          <a class="desknav__tab" href="index.html" aria-current="page">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 4h14m-15 0a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <span>Markalar</span>
+          </a>
+
+          <a class="desknav__tab" href="products.html">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 7h7v7H4V7Zm9 0h7v7h-7V7ZM8 17h8v3H8v-3Z" fill="currentColor"/></svg>
+            </span>
+            <span>Ürünler</span>
+          </a>
+
+          <a class="desknav__tab" href="contact.html">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <span>İletişim</span>
+          </a>
+
+          <!-- Aksiyon (login sonrası) -->
+          <button id="addBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Ürün Ekle">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm5 4v10m5-5H7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <span>Ekle</span>
+          </button>
+
+          <button id="bulkBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Toplu Ekle (Excel)">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 5h12M9 8v11M15 8v11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <span>Excel</span>
+          </button>
+
+          <button id="manageBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Ürünleri Yönet">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z" fill="currentColor"/></svg>
+            </span>
+            <span>Ürünler</span>
+          </button>
+
+          <button id="loginBtn" class="desknav__tab desknav__tab--ghost" aria-label="Giriş">
+            <span class="desknav__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M14 3h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4M10 7l-4 5 4 5M6 12h11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <span>Giriş</span>
+          </button>
+        </nav>
       </div>
-
-      <nav class="desknav__tabs" aria-label="Ana gezinme">
-        <a class="desknav__tab" href="index.html" aria-current="page">
-          <span class="desknav__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 4h14m-15 0a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </span>
-          <span>Markalar</span>
-        </a>
-
-        <a class="desknav__tab" href="products.html">
-          <span class="desknav__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M4 7h7v7H4V7Zm9 0h7v7h-7V7ZM8 17h8v3H8v-3Z" fill="currentColor"/></svg>
-          </span>
-          <span>Ürünler</span>
-        </a>
-
-        <a class="desknav__tab" href="contact.html">
-          <span class="desknav__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M12 4 3 8h18L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </span>
-          <span>İletişim</span>
-        </a>
-
-        <!-- Aksiyon (login sonrası) -->
-        <button id="addBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Ürün Ekle">
-          <span class="desknav__icon" aria-hidden="true">
-            <!-- Plus in square -->
-            <svg viewBox="0 0 24 24"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm5 4v10m5-5H7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </span>
-          <span>Ekle</span>
-        </button>
-
-        <button id="bulkBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Toplu Ekle (Excel)">
-          <span class="desknav__icon" aria-hidden="true">
-            <!-- Spreadsheet -->
-            <svg viewBox="0 0 24 24"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 5h12M9 8v11M15 8v11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </span>
-          <span>Excel</span>
-        </button>
-
-        <button id="manageBtn" class="desknav__tab desknav__tab--action" style="display:none" aria-label="Ürünleri Yönet">
-          <span class="desknav__icon" aria-hidden="true">
-            <!-- Grid/manage -->
-            <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z" fill="currentColor"/></svg>
-          </span>
-          <span>Ürünler</span>
-        </button>
-
-        <button id="loginBtn" class="desknav__tab desknav__tab--ghost" aria-label="Giriş">
-          <span class="desknav__icon" aria-hidden="true">
-            <!-- Log in/out door -->
-            <svg viewBox="0 0 24 24"><path d="M14 3h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4M10 7l-4 5 4 5M6 12h11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </span>
-          <span>Giriş</span>
-        </button>
-      </nav>
     </div>
-  </div>
-</header>
+  </header>
 
   <!-- ==== SAYFA ==== -->
   <main class="container">
@@ -282,7 +278,7 @@
       authDomain: "veliogluglobal-86631.firebaseapp.com",
       databaseURL: "https://veliogluglobal-86631-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "veliogluglobal-86631",
-      storageBucket: "veliogluglobal-86631.firebasestorage.app",
+      storageBucket: "veliogluglobal-86631.appspot.com",
       messagingSenderId: "643623290439",
       appId: "1:643623290439:web:a61c004610ceb9e1105362",
       measurementId: "G-D0WT8BV4C5"
@@ -297,7 +293,8 @@
     // Başlat
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
-    const storage = getStorage(app, "gs://veliogluglobal-86631.firebasestorage.app");
+    // Bucket’i açıkça gs:// ile ver (doğru format)
+    const storage = getStorage(app, "gs://veliogluglobal-86631.appspot.com");
 
     // DEMO Auth
     const LOGIN_USER = "admin";
@@ -565,7 +562,7 @@
     document.getElementById('bulkClose').addEventListener('click', closeBulk);
     document.getElementById('bulkCancel').addEventListener('click', closeBulk);
 
-    // Şablon indir (CSV)
+    // Şablon indir (CSV) — UTF-8 BOM ekli
     document.getElementById('downloadTemplate').addEventListener('click', ()=>{
       const headers = ['name','brand','catalog','category','package','case_qty','img'];
       const rows = [
@@ -573,7 +570,8 @@
         ['Doğadan Form','Doğadan','dogadan','Poşet Çay','20 li','24','https://.../form20.png'],
       ];
       const csv = [headers.join(','), ...rows.map(r=>r.map(cell=>csvEscape(cell)).join(','))].join('\n');
-      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      // BOM ekle
+      const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = 'urun_sablon.csv';
       document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
@@ -581,6 +579,31 @@
     function csvEscape(s){
       const str = String(s ?? '');
       return /[",\n]/.test(str) ? `"${str.replace(/"/g,'""')}"` : str;
+    }
+
+    // ---- CSV/XLSX okuma: Türkçe karakter için encoding fallback ----
+    function readAsTextWithEncoding(blob, enc) {
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result || '');
+        r.onerror = reject;
+        try { r.readAsText(blob, enc); } catch (e) { reject(e); }
+      });
+    }
+    async function decodeTextWithFallback(arrayBuffer, encodings = ['utf-8', 'windows-1254', 'iso-8859-9']) {
+      const blob = new Blob([arrayBuffer]);
+      const u8 = new Uint8Array(arrayBuffer);
+      const hasBOM = u8.length >= 3 && u8[0] === 0xEF && u8[1] === 0xBB && u8[2] === 0xBF;
+      const order = hasBOM ? ['utf-8', ...encodings.filter(e => e !== 'utf-8')] : encodings;
+
+      for (const enc of order) {
+        try {
+          const text = await readAsTextWithEncoding(blob, enc);
+          const bad = (text.match(/\uFFFD/g) || []).length; // replacement char sayısı
+          if (bad <= 2) return text;
+        } catch {}
+      }
+      return await readAsTextWithEncoding(blob, 'utf-8');
     }
 
     // Dosya seçilince oku
@@ -596,11 +619,15 @@
         const data = await f.arrayBuffer();
         let rows = [];
         if(f.name.toLowerCase().endsWith('.csv')){
-          const text = new TextDecoder('utf-8').decode(new Uint8Array(data));
-          const wb = XLSX.read(text, {type:'string'}); const ws = wb.Sheets[wb.SheetNames[0]];
+          // CSV: encoding fallback ile oku
+          const text = await decodeTextWithFallback(data, ['utf-8','windows-1254','iso-8859-9']);
+          const wb = XLSX.read(text, {type:'string'});
+          const ws = wb.Sheets[wb.SheetNames[0]];
           rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true});
         }else{
-          const wb = XLSX.read(data, {type:'array'}); const ws = wb.Sheets[wb.SheetNames[0]];
+          // XLS/XLSX: binary array ile
+          const wb = XLSX.read(data, {type:'array'});
+          const ws = wb.Sheets[wb.SheetNames[0]];
           rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true});
         }
         if(!rows.length) throw new Error('Boş dosya');

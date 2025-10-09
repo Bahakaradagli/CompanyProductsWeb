@@ -644,6 +644,7 @@
           <div class="admin-form-actions">
             <button id="saveContent" class="admin-btn admin-btn--primary">Kaydet</button>
             <button id="resetContent" class="admin-btn">Sıfırla</button>
+            <button id="loadCurrentContent" class="admin-btn">Mevcut İçeriği Yükle</button>
           </div>
         </div>
       </div>
@@ -1470,10 +1471,96 @@
           
           // Sayfayı güncelle
           updatePageContent(data);
+        } else {
+          // Firebase'de veri yoksa, mevcut sayfa içeriğini form alanlarına yükle
+          loadCurrentPageContent();
         }
       }catch(err){
         console.error('İçerik yüklenirken hata:', err);
+        // Hata durumunda da mevcut içeriği yükle
+        loadCurrentPageContent();
       }
+    }
+    
+    // Mevcut sayfa içeriğini form alanlarına yükle
+    function loadCurrentPageContent(){
+      // Genel ayarlar
+      document.getElementById('siteTitle').value = document.title || '';
+      const logo = document.querySelector('.desknav__logo');
+      if(logo) document.getElementById('logoUrl').value = logo.src || '';
+      const footer = document.querySelector('footer small');
+      if(footer) document.getElementById('footerText').value = footer.textContent || '';
+      
+      // Ana sayfa içeriği (eğer bu sayfa ana sayfa ise)
+      const heroTitle = document.querySelector('.hero__title');
+      if(heroTitle) document.getElementById('homepageTitle').value = heroTitle.textContent || '';
+      
+      const heroDesc = document.querySelector('.hero__desc');
+      if(heroDesc) document.getElementById('homepageDesc').value = heroDesc.textContent || '';
+      
+      const servicesTitle = document.querySelector('.section__title');
+      if(servicesTitle) document.getElementById('servicesTitle').value = servicesTitle.textContent || '';
+      
+      // Hizmetler
+      const serviceTitles = document.querySelectorAll('.feature__body h3');
+      const serviceDescs = document.querySelectorAll('.feature__body p');
+      
+      if(serviceTitles[0]) document.getElementById('service1Title').value = serviceTitles[0].textContent || '';
+      if(serviceDescs[0]) document.getElementById('service1Desc').value = serviceDescs[0].textContent || '';
+      if(serviceTitles[1]) document.getElementById('service2Title').value = serviceTitles[1].textContent || '';
+      if(serviceDescs[1]) document.getElementById('service2Desc').value = serviceDescs[1].textContent || '';
+      if(serviceTitles[2]) document.getElementById('service3Title').value = serviceTitles[2].textContent || '';
+      if(serviceDescs[2]) document.getElementById('service3Desc').value = serviceDescs[2].textContent || '';
+      if(serviceTitles[3]) document.getElementById('service4Title').value = serviceTitles[3].textContent || '';
+      if(serviceDescs[3]) document.getElementById('service4Desc').value = serviceDescs[3].textContent || '';
+      
+      // Pazarlar
+      const sectionTitles = document.querySelectorAll('.section__title');
+      if(sectionTitles[1]) document.getElementById('marketsTitle').value = sectionTitles[1].textContent || '';
+      
+      // Hakkımızda
+      if(sectionTitles[2]) document.getElementById('aboutTitle').value = sectionTitles[2].textContent || '';
+      const aboutDesc = document.querySelector('.about__p');
+      if(aboutDesc) document.getElementById('aboutDesc').value = aboutDesc.textContent || '';
+      
+      // CTA
+      const ctaTitle = document.querySelector('.cta__title');
+      if(ctaTitle) document.getElementById('ctaTitle').value = ctaTitle.textContent || '';
+      const ctaDesc = document.querySelector('.cta__desc');
+      if(ctaDesc) document.getElementById('ctaDesc').value = ctaDesc.textContent || '';
+      
+      // İletişim sayfası
+      const contactTitle = document.querySelector('.contact-hero__title');
+      if(contactTitle) document.getElementById('contactTitle').value = contactTitle.textContent || '';
+      const contactDesc = document.querySelector('.contact-hero__desc');
+      if(contactDesc) document.getElementById('contactDesc').value = contactDesc.textContent || '';
+      
+      // Kişi bilgileri
+      const personNames = document.querySelectorAll('.contact-row__name');
+      const personTitles = document.querySelectorAll('.contact-row__area');
+      const personPhones = document.querySelectorAll('.contact-btn[href^="tel:"]');
+      
+      if(personNames[0]) document.getElementById('person1Name').value = personNames[0].textContent || '';
+      if(personTitles[0]) document.getElementById('person1Title').value = personTitles[0].textContent || '';
+      if(personPhones[0]) document.getElementById('person1Phone').value = personPhones[0].href.replace('tel:', '') || '';
+      
+      if(personNames[1]) document.getElementById('person2Name').value = personNames[1].textContent || '';
+      if(personTitles[1]) document.getElementById('person2Title').value = personTitles[1].textContent || '';
+      if(personPhones[1]) document.getElementById('person2Phone').value = personPhones[1].href.replace('tel:', '') || '';
+      
+      // Renkler - mevcut CSS değerlerini al
+      const rootStyles = getComputedStyle(document.documentElement);
+      const accentColor = rootStyles.getPropertyValue('--accent').trim();
+      if(accentColor) document.getElementById('primaryColor').value = accentColor;
+      
+      const buttonColor = rootStyles.getPropertyValue('--btn-primary-bg').trim();
+      if(buttonColor) document.getElementById('buttonColor').value = buttonColor;
+      
+      const bgColor = rootStyles.getPropertyValue('--bg-color').trim();
+      if(bgColor) document.getElementById('backgroundColor').value = bgColor;
+      
+      const textColor = rootStyles.getPropertyValue('--text-color').trim();
+      if(textColor) document.getElementById('textColor').value = textColor;
     }
     
     // Sayfa içeriğini güncelle
@@ -1503,6 +1590,24 @@
         document.documentElement.style.setProperty('--text-color', data.textColor);
       }
     }
+    
+    // Sıfırla butonu
+    document.getElementById('resetContent').addEventListener('click', ()=>{
+      if(confirm('Tüm form alanlarını temizlemek istediğinize emin misiniz?')){
+        document.querySelectorAll('#adminContent input, #adminContent textarea').forEach(input => {
+          input.value = '';
+        });
+        showNotif("Form alanları temizlendi", "info");
+        setTimeout(()=> hideNotif(), 1200);
+      }
+    });
+    
+    // Mevcut içeriği yükle butonu
+    document.getElementById('loadCurrentContent').addEventListener('click', ()=>{
+      loadCurrentPageContent();
+      showNotif("Mevcut sayfa içeriği yüklendi ✅", "ok");
+      setTimeout(()=> hideNotif(), 1200);
+    });
     
     // Ayarları kaydet
     document.getElementById('saveSettings').addEventListener('click', ()=>{

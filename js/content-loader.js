@@ -28,6 +28,9 @@ async function loadSiteContent() {
     if (snapshot.exists()) {
       const data = snapshot.val();
       updatePageContent(data);
+    } else {
+      // Firebase'de veri yoksa, mevcut sayfa içeriğini koru
+      console.log('Firebase\'de içerik bulunamadı, mevcut içerik korunuyor.');
     }
   } catch (err) {
     console.error('İçerik yüklenirken hata:', err);

@@ -115,11 +115,23 @@
     .admin-settings{
       max-width:600px;margin:0 auto
     }
+    .admin-tabs{
+      display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid #e9ecef
+    }
+    .admin-tab{
+      padding:8px 16px;border:none;background:none;color:#6c757d;cursor:pointer;
+      border-bottom:2px solid transparent;transition:all 0.2s
+    }
+    .admin-tab:hover{color:#495057;background:#f8f9fa}
+    .admin-tab.active{color:#007bff;border-bottom-color:#007bff;background:#f8f9fa}
+    .admin-tab-content{display:none;max-height:400px;overflow-y:auto}
+    .admin-tab-content.active{display:block}
     @media (max-width:768px){
       .admin-panel__sidebar{width:240px}
       .admin-panel__content{padding:20px}
       .admin-form-row{grid-template-columns:1fr}
       .admin-stats{grid-template-columns:1fr}
+      .admin-tabs{flex-wrap:wrap}
     }
   </style>
 </head>
@@ -482,22 +494,153 @@
       <div id="adminContent" class="admin-page">
         <h2>İçerik Düzenle</h2>
         <div class="admin-content-editor">
-          <div class="admin-form-group">
-            <label>Sayfa Başlığı</label>
-            <input type="text" id="pageTitle" class="admin-input">
+          <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="general">Genel</button>
+            <button class="admin-tab" data-tab="homepage">Ana Sayfa</button>
+            <button class="admin-tab" data-tab="contact">İletişim</button>
+            <button class="admin-tab" data-tab="colors">Renkler</button>
           </div>
-          <div class="admin-form-group">
-            <label>Ana Renk</label>
-            <input type="color" id="primaryColor" class="admin-input">
+          
+          <!-- Genel Ayarlar -->
+          <div id="contentGeneral" class="admin-tab-content active">
+            <div class="admin-form-group">
+              <label>Site Başlığı</label>
+              <input type="text" id="siteTitle" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Logo URL</label>
+              <input type="url" id="logoUrl" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Footer Metni</label>
+              <textarea id="footerText" class="admin-input" rows="3"></textarea>
+            </div>
           </div>
-          <div class="admin-form-group">
-            <label>Buton Rengi</label>
-            <input type="color" id="buttonColor" class="admin-input">
+          
+          <!-- Ana Sayfa İçeriği -->
+          <div id="contentHomepage" class="admin-tab-content">
+            <div class="admin-form-group">
+              <label>Ana Başlık</label>
+              <input type="text" id="homepageTitle" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Ana Açıklama</label>
+              <textarea id="homepageDesc" class="admin-input" rows="4"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label>Hizmetler Başlığı</label>
+              <input type="text" id="servicesTitle" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Hizmet 1 Başlık</label>
+              <input type="text" id="service1Title" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Hizmet 1 Açıklama</label>
+              <textarea id="service1Desc" class="admin-input" rows="3"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label>Hizmet 2 Başlık</label>
+              <input type="text" id="service2Title" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Hizmet 2 Açıklama</label>
+              <textarea id="service2Desc" class="admin-input" rows="3"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label>Hizmet 3 Başlık</label>
+              <input type="text" id="service3Title" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Hizmet 3 Açıklama</label>
+              <textarea id="service3Desc" class="admin-input" rows="3"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label>Hizmet 4 Başlık</label>
+              <input type="text" id="service4Title" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Hizmet 4 Açıklama</label>
+              <textarea id="service4Desc" class="admin-input" rows="3"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label>Pazarlar Başlığı</label>
+              <input type="text" id="marketsTitle" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Hakkımızda Başlığı</label>
+              <input type="text" id="aboutTitle" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Hakkımızda Açıklama</label>
+              <textarea id="aboutDesc" class="admin-input" rows="4"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label>CTA Başlığı</label>
+              <input type="text" id="ctaTitle" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>CTA Açıklama</label>
+              <textarea id="ctaDesc" class="admin-input" rows="3"></textarea>
+            </div>
           </div>
-          <div class="admin-form-group">
-            <label>Footer Metni</label>
-            <textarea id="footerText" class="admin-input" rows="3"></textarea>
+          
+          <!-- İletişim Sayfası İçeriği -->
+          <div id="contentContact" class="admin-tab-content">
+            <div class="admin-form-group">
+              <label>İletişim Başlığı</label>
+              <input type="text" id="contactTitle" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>İletişim Açıklama</label>
+              <textarea id="contactDesc" class="admin-input" rows="4"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label>Kişi 1 Adı</label>
+              <input type="text" id="person1Name" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Kişi 1 Ünvan</label>
+              <input type="text" id="person1Title" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Kişi 1 Telefon</label>
+              <input type="text" id="person1Phone" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Kişi 2 Adı</label>
+              <input type="text" id="person2Name" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Kişi 2 Ünvan</label>
+              <input type="text" id="person2Title" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Kişi 2 Telefon</label>
+              <input type="text" id="person2Phone" class="admin-input">
+            </div>
           </div>
+          
+          <!-- Renk Ayarları -->
+          <div id="contentColors" class="admin-tab-content">
+            <div class="admin-form-group">
+              <label>Ana Renk</label>
+              <input type="color" id="primaryColor" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Buton Rengi</label>
+              <input type="color" id="buttonColor" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Arka Plan Rengi</label>
+              <input type="color" id="backgroundColor" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>Metin Rengi</label>
+              <input type="color" id="textColor" class="admin-input">
+            </div>
+          </div>
+          
           <div class="admin-form-actions">
             <button id="saveContent" class="admin-btn admin-btn--primary">Kaydet</button>
             <button id="resetContent" class="admin-btn">Sıfırla</button>
@@ -1102,6 +1245,7 @@
       if(!isAuthed()){ alert('Önce giriş yapın.'); return; }
       adminPanel.style.display = 'flex';
       updateAdminStats();
+      loadContentData();
     });
     
     document.getElementById('adminPanelClose').addEventListener('click', ()=>{
@@ -1231,29 +1375,134 @@
       }
     });
     
-    // İçerik düzenleme
-    document.getElementById('saveContent').addEventListener('click', ()=>{
-      const title = document.getElementById('pageTitle').value;
-      const primaryColor = document.getElementById('primaryColor').value;
-      const buttonColor = document.getElementById('buttonColor').value;
-      const footerText = document.getElementById('footerText').value;
+    // İçerik düzenleme - Tab sistemi
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', ()=>{
+        const tabName = tab.getAttribute('data-tab');
+        
+        // Tüm tab'ları deaktif et
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Seçilen tab'ı aktif et
+        tab.classList.add('active');
+        document.getElementById(`content${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).classList.add('active');
+      });
+    });
+    
+    // İçerik kaydetme
+    document.getElementById('saveContent').addEventListener('click', async ()=>{
+      if(!isAuthed()){ alert('Önce giriş yapın.'); return; }
       
-      // Sayfa başlığını güncelle
-      if(title) document.querySelector('.page-title').textContent = title;
-      
-      // Renkleri güncelle
-      if(primaryColor) document.documentElement.style.setProperty('--accent', primaryColor);
-      if(buttonColor) {
-        document.documentElement.style.setProperty('--btn-primary-bg', buttonColor);
-        document.documentElement.style.setProperty('--btn-primary-hover', adjustBrightness(buttonColor, -20));
+      try{
+        showNotif("İçerik kaydediliyor...", "info");
+        
+        const contentData = {
+          // Genel ayarlar
+          siteTitle: document.getElementById('siteTitle').value,
+          logoUrl: document.getElementById('logoUrl').value,
+          footerText: document.getElementById('footerText').value,
+          
+          // Ana sayfa içeriği
+          homepageTitle: document.getElementById('homepageTitle').value,
+          homepageDesc: document.getElementById('homepageDesc').value,
+          servicesTitle: document.getElementById('servicesTitle').value,
+          service1Title: document.getElementById('service1Title').value,
+          service1Desc: document.getElementById('service1Desc').value,
+          service2Title: document.getElementById('service2Title').value,
+          service2Desc: document.getElementById('service2Desc').value,
+          service3Title: document.getElementById('service3Title').value,
+          service3Desc: document.getElementById('service3Desc').value,
+          service4Title: document.getElementById('service4Title').value,
+          service4Desc: document.getElementById('service4Desc').value,
+          marketsTitle: document.getElementById('marketsTitle').value,
+          aboutTitle: document.getElementById('aboutTitle').value,
+          aboutDesc: document.getElementById('aboutDesc').value,
+          ctaTitle: document.getElementById('ctaTitle').value,
+          ctaDesc: document.getElementById('ctaDesc').value,
+          
+          // İletişim sayfası
+          contactTitle: document.getElementById('contactTitle').value,
+          contactDesc: document.getElementById('contactDesc').value,
+          person1Name: document.getElementById('person1Name').value,
+          person1Title: document.getElementById('person1Title').value,
+          person1Phone: document.getElementById('person1Phone').value,
+          person2Name: document.getElementById('person2Name').value,
+          person2Title: document.getElementById('person2Title').value,
+          person2Phone: document.getElementById('person2Phone').value,
+          
+          // Renkler
+          primaryColor: document.getElementById('primaryColor').value,
+          buttonColor: document.getElementById('buttonColor').value,
+          backgroundColor: document.getElementById('backgroundColor').value,
+          textColor: document.getElementById('textColor').value,
+          
+          updatedAt: serverTimestamp()
+        };
+        
+        // Firebase'e kaydet
+        await set(ref(db, 'siteContent'), contentData);
+        
+        // Sayfayı güncelle
+        updatePageContent(contentData);
+        
+        showNotif("İçerik kaydedildi ✅", "ok");
+        setTimeout(()=> hideNotif(), 1200);
+      }catch(err){
+        console.error(err);
+        showNotif("Kaydedilemedi. Lütfen tekrar deneyin.", "err");
+        setTimeout(()=> hideNotif(), 3000);
+      }
+    });
+    
+    // İçerik yükleme
+    async function loadContentData(){
+      try{
+        const snapshot = await get(ref(db, 'siteContent'));
+        if(snapshot.exists()){
+          const data = snapshot.val();
+          
+          // Form alanlarını doldur
+          Object.keys(data).forEach(key => {
+            const element = document.getElementById(key);
+            if(element) element.value = data[key] || '';
+          });
+          
+          // Sayfayı güncelle
+          updatePageContent(data);
+        }
+      }catch(err){
+        console.error('İçerik yüklenirken hata:', err);
+      }
+    }
+    
+    // Sayfa içeriğini güncelle
+    function updatePageContent(data){
+      // Genel ayarlar
+      if(data.siteTitle) document.title = data.siteTitle;
+      if(data.logoUrl) {
+        document.querySelectorAll('.desknav__logo').forEach(logo => logo.src = data.logoUrl);
+      }
+      if(data.footerText) {
+        document.querySelectorAll('footer small').forEach(footer => footer.textContent = data.footerText);
       }
       
-      // Footer metnini güncelle
-      if(footerText) document.querySelector('footer small').textContent = footerText;
-      
-      showNotif("İçerik güncellendi ✅", "ok");
-      setTimeout(()=> hideNotif(), 1200);
-    });
+      // Renkleri güncelle
+      if(data.primaryColor) {
+        document.documentElement.style.setProperty('--accent', data.primaryColor);
+        document.querySelectorAll('header').forEach(header => header.style.setProperty('--accent', data.primaryColor));
+      }
+      if(data.buttonColor) {
+        document.documentElement.style.setProperty('--btn-primary-bg', data.buttonColor);
+        document.documentElement.style.setProperty('--btn-primary-hover', adjustBrightness(data.buttonColor, -20));
+      }
+      if(data.backgroundColor) {
+        document.documentElement.style.setProperty('--bg-color', data.backgroundColor);
+      }
+      if(data.textColor) {
+        document.documentElement.style.setProperty('--text-color', data.textColor);
+      }
+    }
     
     // Ayarları kaydet
     document.getElementById('saveSettings').addEventListener('click', ()=>{

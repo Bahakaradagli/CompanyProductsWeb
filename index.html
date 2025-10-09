@@ -233,9 +233,10 @@
       <h3 class="modal__title">Toplu Ekle (Excel / CSV)</h3>
 
       <div class="form__row">
-        <label>Dosya Yükle (<span class="mono">.xlsx, .xls, .csv</span>)</label>
-        <input type="file" id="bulkFile" accept=".xlsx,.xls,.csv" />
-        <div class="hint">Beklenen başlıklar: <span class="mono">name, brand, catalog, category, package, case_qty, img</span></div>
+        <label>Dosya Yükle (<span class="mono">.xlsx, .xls, .csv</span> + isteğe bağlı görseller: <span class="mono">.png, .jpg, .zip</span>)</label>
+        <input type="file" id="bulkFile" accept=".xlsx,.xls,.csv,.png,.jpg,.jpeg,.zip" multiple />
+        <div class="hint">Beklenen başlıklar: <span class="mono">name, brand, catalog, category, package, case_qty, img</span>. 
+          <br/>Görseller için: <span class="mono">img</span> sütununa dosya adı yazın (örn: <span class="mono">rize500.png</span>) ve aynı anda görsel dosyaları veya bir <span class="mono">.zip</span> yükleyin.</div>
       </div>
 
       <div class="toolbar" style="margin-top:12px">
@@ -284,6 +285,8 @@
 
   <!-- SheetJS -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- JSZip (opsiyonel: .zip içindeki görselleri okumak için) -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
   <!-- Firebase -->
   <script type="module">
@@ -554,6 +557,7 @@
 
     let parsedRows = [];
     let originalHeaders = [];
+    let imageFileMap = new Map(); // key: lower filename, val: File
 
     function resetBulkUI(){
       bulkStatus.textContent = 'Dosya seçin…';
@@ -565,6 +569,7 @@
       bulkOk.hidden = true;
       parsedRows = [];
       originalHeaders = [];
+      imageFileMap = new Map();
     }
     function closeBulk(){ bulkDlg.close(); resetBulkUI(); }
 
@@ -621,19 +626,51 @@
       return await readAsTextWithEncoding(blob, 'utf-8');
     }
 
+    // Yardımcı: Zip içinden görselleri oku ve imageFileMap'e ekle
+    async function tryLoadZipImages(file){
+      if(!(window.JSZip)) return;
+      try{
+        const zip = await JSZip.loadAsync(file);
+        const entries = Object.values(zip.files);
+        for(const entry of entries){
+          if(entry.dir) continue;
+          const name = entry.name.split('/').pop();
+          const low = (name||'').toLowerCase();
+          if(!/\.(png|jpg|jpeg)$/i.test(low)) continue;
+          const blob = await entry.async('blob');
+          const ext = low.endsWith('.jpeg') ? 'jpg' : low.split('.').pop();
+          const f = new File([blob], name, { type: ext==='png' ? 'image/png' : 'image/jpeg' });
+          if(!imageFileMap.has(low)) imageFileMap.set(low, f);
+        }
+      }catch(_e){ /* yoksay */ }
+    }
+
     // Dosya seçilince oku
     bulkFile.addEventListener('change', async ()=>{
       bulkErr.hidden = true; bulkOk.hidden = true;
-      const f = bulkFile.files?.[0];
-      if(!f){ resetBulkUI(); return; }
+      const files = Array.from(bulkFile.files || []);
+      if(!files.length){ resetBulkUI(); return; }
       try{
         if (typeof XLSX === 'undefined'){
           resetBulkUI(); bulkErr.hidden=false;
           bulkErr.textContent = 'Excel kütüphanesi (XLSX) yüklenemedi.'; return;
         }
-        const data = await f.arrayBuffer();
+        // Dosyaları türlerine göre ayır
+        const sheet = files.find(ff=>/\.(xlsx|xls|csv)$/i.test(ff.name));
+        const images = files.filter(ff=>/\.(png|jpg|jpeg)$/i.test(ff.name));
+        const zips   = files.filter(ff=>/\.(zip)$/i.test(ff.name));
+
+        // Görselleri haritaya ekle
+        for(const img of images){ imageFileMap.set(img.name.toLowerCase(), img); }
+        for(const z of zips){ await tryLoadZipImages(z); }
+
+        if(!sheet){
+          resetBulkUI(); bulkErr.hidden=false; bulkErr.textContent='Excel/CSV dosyası bulunamadı.'; return;
+        }
+
+        const data = await sheet.arrayBuffer();
         let rows = [];
-        if(f.name.toLowerCase().endsWith('.csv')){
+        if(sheet.name.toLowerCase().endsWith('.csv')){
           // CSV: encoding fallback ile oku
           const text = await decodeTextWithFallback(data, ['utf-8','windows-1254','iso-8859-9']);
           const wb = XLSX.read(text, {type:'string'});
@@ -647,7 +684,8 @@
         }
         if(!rows.length) throw new Error('Boş dosya');
 
-        originalHeaders = (rows.shift() || []).map(h => String(h||'').trim());
+        // Başlıklar ve satırlar: Türkçe karakterleri NFC'ye normalize et
+        originalHeaders = (rows.shift() || []).map(h => String(h||'').trim().normalize('NFC'));
         const normKeys = originalHeaders.map(h => normalizeHeader(h));
 
         const required = ['name','catalog'];
@@ -666,7 +704,8 @@
           const obj = {};
           for(let i=0;i<normKeys.length;i++){
             const key = normKeys[i]; if(!key) continue;
-            obj[key] = r[i] ?? null;
+            const val = r[i];
+            obj[key] = (typeof val === 'string') ? val.normalize('NFC') : (val ?? null);
           }
           const normalized = normalizeProduct({
             name: obj.name ?? null, brand: obj.brand ?? null, catalog: obj.catalog ?? null,
@@ -680,12 +719,29 @@
         const maxRows = 100;
         bulkBody.innerHTML = '';
         const previewRows = rows.slice(0, maxRows);
+        const imgColIndex = normKeys.findIndex(k=>k==='img');
         for(const r of previewRows){
-          const tds = originalHeaders.map((_,i)=>`<td class="hard-wrap">${escapeHtml(r[i] ?? '')}</td>`).join('');
+          const tds = originalHeaders.map((_,i)=>{
+            const cell = r[i];
+            if(i===imgColIndex){
+              const val = String(cell||'').trim();
+              const low = val.toLowerCase();
+              const isUrl = /^https?:\/\//i.test(val);
+              if(isUrl){
+                return `<td><img src="${val}" alt="img" style="height:40px;object-fit:contain" onerror="this.style.display='none'"/></td>`;
+              }else if(imageFileMap.has(low)){
+                const file = imageFileMap.get(low);
+                const url = URL.createObjectURL(file);
+                return `<td><img src="${url}" alt="img" style="height:40px;object-fit:contain" onload="URL.revokeObjectURL(this.src)"/></td>`;
+              }
+            }
+            return `<td class="hard-wrap">${escapeHtml(cell ?? '')}</td>`;
+          }).join('');
           const tr = document.createElement('tr'); tr.innerHTML = tds; bulkBody.appendChild(tr);
         }
         bulkPreviewWrap.style.display = '';
-        bulkStatus.innerHTML = `<span class="status-ok">${parsedRows.length}</span> satır hazır. <span class="muted">(Önizleme ilk ${Math.min(maxRows, rows.length)} satır)</span>`;
+        const extraInfo = imageFileMap.size ? ` • ${imageFileMap.size} görsel eşleşti` : '';
+        bulkStatus.innerHTML = `<span class="status-ok">${parsedRows.length}</span> satır hazır${extraInfo}. <span class="muted">(Önizleme ilk ${Math.min(maxRows, rows.length)} satır)</span>`;
         bulkImportBtn.disabled = parsedRows.length===0;
       }catch(err){
         console.error(err); resetBulkUI(); bulkErr.hidden=false;
@@ -702,7 +758,23 @@
 
       try{
         for(const p of parsedRows){
-          const newRef = push(ref(db, "products"));
+          // img alanı dosya adıysa ve haritada varsa, önce yükle
+          if(p.img && !/^https?:\/\//i.test(p.img)){
+            const fname = String(p.img||'').trim().toLowerCase();
+            const f = imageFileMap.get(fname);
+            if(f){
+              const cat  = (p.catalog || slugify(p.name || 'urun')).toLowerCase();
+              const base = slugify(`${p.name || 'urun'}`) || 'urun';
+              const ext0 = (f.type?.split('/')?.[1] || fname.split('.').pop() || 'jpg').toLowerCase();
+              const ext  = ext0 === 'jpeg' ? 'jpg' : ext0;
+              const key  = `products/${cat}/${base}-${Date.now()}.${ext}`;
+              const storageRef = sRef(storage, key);
+              await uploadBytes(storageRef, f, { contentType: f.type || (ext==='png'?'image/png':'image/jpeg') });
+              const url = await getDownloadURL(storageRef);
+              p.img = url;
+            }
+          }
+          const newRef = push(ref(db, 'products'));
           await set(newRef, p);
         }
         bulkOk.hidden = false;

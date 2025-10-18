@@ -45,7 +45,7 @@ body{
   height:64px; gap:12px;
 }
 .desknav__brand{ display:flex; align-items:center; gap:12px; min-width:0; }
-.desknav__logo{ width:40px; height:40px; border-radius:12px; object-fit:cover; background:#0A0A0A; display:block; box-shadow: 0 0 0 1px rgba(255,255,255,.15) inset; }
+.desknav__logo{ width:48px; height:48px; border-radius:12px; object-fit:contain; background:rgba(255,255,255,0.1); display:block; box-shadow: 0 0 0 1px rgba(255,255,255,.15) inset; padding:4px; }
 .desknav__title{ font-weight:700; letter-spacing:.2px; white-space:nowrap; color:#fff; }
 
 /* sekmeler + action butonları görünümü */
